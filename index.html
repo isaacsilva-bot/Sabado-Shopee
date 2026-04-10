@@ -49,6 +49,8 @@
             cursor: pointer; 
             font-weight: 800; 
             border-bottom: 5px solid transparent;
+            text-align: center;
+            padding: 5px;
         }
 
         .tab-item i { font-style: normal; font-size: 24px; margin-bottom: 2px; }
@@ -59,7 +61,7 @@
             border-bottom: 5px solid var(--orange);
         }
 
-        /* CARD VERDE FLUTUANTE (APENAS NA ABA FECHAMENTO) */
+        /* CARD VERDE FLUTUANTE (ANIMAÇÃO) */
         .info-card {
             background: var(--green-bg);
             border-left: 8px solid var(--green-border);
@@ -142,11 +144,11 @@
     <nav class="tab-bar">
         <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
             <i>📅</i>
-            <span>PLANEJAMENTO DETALHADO SE SÁBADO</span>
+            <span>PLANEJAMENTO</span>
         </div>
         <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
             <i>🏬</i>
-            <span>FECHAMENTO DE PONTO - AGÊNCIAS SHOPEE</span>
+            <span>FECHAMENTO</span>
         </div>
     </nav>
 
@@ -163,7 +165,7 @@
 
     <div id="aba-fech" class="hidden">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Horário de Fechamento de Ponto de Coleta</h2>
+            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Fechamento de Ponto de Coleta</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista2" placeholder="Digite seu ID...">
                 <button onclick="buscarFechamentoSabado()">CONSULTAR MEU ID</button>
@@ -203,7 +205,7 @@
         const resDiv = document.getElementById('resultadoPlan');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando o planejamento da sua rota neste sábado...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando planejamento...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
@@ -228,7 +230,7 @@
         const resDiv = document.getElementById('resultadoFech');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando os horários de visita dos seus pontos deste sábado. Aguarde...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando horários...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
