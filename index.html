@@ -3,127 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP Planejamento</title>
+    <title>SVP PLANEJAMENTO</title>
     <style>
-        :root { --primary-orange: #ff6a00; --dark-orange: #e65c00; }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; padding-bottom: 70px; }
+        :root { --orange: #ff6a00; --dark: #333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f4f4; padding-bottom: 80px; }
+        header { background: var(--orange); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; }
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 15px; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
         
         /* Abas */
-        .tab-content { display: none; padding: 10px; }
+        .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        /* Navegação */
-        .tab-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000; }
-        .tab-item { flex: 1; padding: 15px 5px; text-align: center; color: #666; cursor: pointer; font-size: 12px; font-weight: bold; border-top: 3px solid transparent; }
-        .tab-item.active { color: var(--primary-orange); border-top: 3px solid var(--primary-orange); background: #fff5ed; }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .tab-item { flex: 1; padding: 15px; text-align: center; color: #666; cursor: pointer; font-size: 13px; font-weight: bold; border-top: 3px solid transparent; }
+        .tab-item.active { color: var(--orange); border-top: 3px solid var(--orange); background: #fff5ed; }
 
-        /* Estilos específicos */
-        header { background: #ff6a00; padding: 15px; text-align: center; color: white; font-weight: bold; margin-bottom: 10px; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: var(--primary-orange); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        
-        /* Tabela Aba 1 */
-        table { width: 100%; border-collapse: collapse; font-size: 12px; background: white; }
-        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn-maps { background: #ff6a00; color: white; padding: 6px 10px; border-radius: 6px; text-decoration: none; display: inline-block; }
-
-        /* Card Aba 2 */
-        .card-entrega { background: white; padding: 15px; margin-bottom: 15px; border-radius: 15px; border-left: 6px solid var(--primary-orange); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .label { font-size: 10px; color: var(--primary-orange); text-transform: uppercase; font-weight: bold; }
-        .valor { font-size: 14px; margin-bottom: 8px; display: block; }
+        /* Resultados */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; margin-top: 10px; font-size: 13px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #f8f8f8; }
+        .btn-gps { background: var(--orange); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 12px; }
+        .card { background: white; padding: 15px; border-radius: 12px; border-left: 5px solid var(--orange); margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .status-msg { text-align: center; color: #666; padding: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div id="aba1" class="tab-content active">
+    <div id="aba-plan" class="tab-content active">
         <header>Planejamento de Sábado</header>
-        <input type="text" id="idMotorista1" placeholder="Digite seu ID...">
-        <div id="res1"></div>
+        <div class="container">
+            <input type="text" id="id1" placeholder="Digite seu ID...">
+            <div id="res1" class="status-msg">Aguardando ID...</div>
+        </div>
     </div>
 
-    <div id="aba2" class="tab-content">
+    <div id="aba-fech" class="tab-content">
         <header>Fechamento de Pontos</header>
-        <input type="text" id="idMotorista2" placeholder="Digite seu ID...">
-        <button onclick="buscarAba2()">Consultar</button>
-        <div id="res2"></div>
+        <div class="container">
+            <input type="text" id="id2" placeholder="Digite seu ID...">
+            <button onclick="buscarFechamento()">Consultar Fechamento</button>
+            <div id="res2" class="status-msg">Aguardando consulta...</div>
+        </div>
     </div>
 
     <nav class="tab-bar">
-        <div class="tab-item active" onclick="switchTab('aba1', this)">📅 Planejamento</div>
-        <div class="tab-item" onclick="switchTab('aba2', this)">🏬 Fechamento</div>
+        <div class="tab-item active" onclick="nav('aba-plan', this)">📅 Planejamento</div>
+        <div class="tab-item" onclick="nav('aba-fech', this)">🏬 Fechamento</div>
     </nav>
 
 <script>
-    function switchTab(id, el) {
+    function nav(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     }
 
-    // --- LOGICA ABA 1 ---
-    const url1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
-    let dados1 = [];
-
-    async function carregarAba1() {
-        const res = await fetch(url1);
-        const txt = await res.text();
-        const linhas = txt.split("\n");
-        const headers = linhas[0].split(",");
-        dados1 = linhas.slice(1).map(l => {
-            const cols = l.split(",");
+    // Função de tratamento de CSV Universal
+    function processarDados(csv, separador) {
+        const linhas = csv.split(/\r?\n/).filter(l => l.trim() !== "");
+        const headers = linhas[0].split(separador).map(h => h.trim().replace(/"/g, ''));
+        return linhas.slice(1).map(linha => {
+            const cols = linha.split(separador);
             let obj = {};
-            headers.forEach((h, i) => obj[h.trim()] = cols[i]);
+            headers.forEach((h, i) => {
+                obj[h] = cols[i] ? cols[i].trim().replace(/"/g, '') : "";
+            });
             return obj;
         });
     }
 
-    document.getElementById("idMotorista1").addEventListener("input", function() {
-        const id = this.value.trim();
-        const resDiv = document.getElementById("res1");
-        const filtrado = dados1.filter(d => d["ID do motorista"] === id);
-        
-        if(filtrado.length === 0) { resDiv.innerHTML = "<p>Nenhum resultado.</p>"; return; }
-        
-        let html = "<table><tr><th>Loja</th><th>Ações</th></tr>";
-        filtrado.forEach(r => {
-            const local = `${r["ENDEREÇO"]}, ${r["NUMERO"]} ${r["BAIRRO"]}`;
-            const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(local)}`;
-            html += `<tr><td>${r["Nome da Loja"]}</td><td><a class="btn-maps" href="${link}" target="_blank">Abrir GPS</a></td></tr>`;
-        });
-        resDiv.innerHTML = html + "</table>";
-    });
+    // --- ABA 1: PLANEJAMENTO ---
+    const urlPlan = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
+    let bancoPlan = [];
 
-    // --- LOGICA ABA 2 ---
-    async function buscarAba2() {
-        const id = document.getElementById("idMotorista2").value.trim();
-        const resDiv = document.getElementById("res2");
-        const url2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
-        
-        resDiv.innerHTML = "Buscando...";
-        const res = await fetch(url2);
-        const txt = await res.text();
-        const linhas = txt.split(/\r?\n/).map(l => l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-        const cabecalho = linhas[0].map(c => c.replace(/"/g, '').trim());
-        const idxID = cabecalho.indexOf("ID do motorista");
-        const filtrados = linhas.filter(l => l[idxID] === id);
-
-        if(filtrados.length === 0) { resDiv.innerHTML = "ID não encontrado."; return; }
-
-        let html = "";
-        filtrados.forEach(d => {
-            html += `<div class="card-entrega">`;
-            cabecalho.forEach((col, i) => {
-                if(["Loja / Ponto de Coleta", "Endereço Completo", "Pacotes Coletados"].includes(col)) {
-                    html += `<span class="label">${col}</span><span class="valor">${d[i]}</span>`;
-                }
-            });
-            html += `</div>`;
-        });
-        resDiv.innerHTML = html;
+    async function carregarPlan() {
+        try {
+            const r = await fetch(urlPlan);
+            const txt = await r.text();
+            bancoPlan = processarDados(txt, ",");
+            console.log("Planilha 1 carregada");
+        } catch (e) { document.getElementById('res1').innerText = "Erro ao conectar com a planilha 1."; }
     }
 
-    carregarAba1();
+    document.getElementById('id1').addEventListener('input', function() {
+        const id = this.value.trim();
+        const res = document.getElementById('res1');
+        if(!id) { res.innerText = "Digite seu ID..."; return; }
+        
+        const f = bancoPlan.filter(d => d["ID do motorista"] === id);
+        if(f.length === 0) { res.innerText = "ID não encontrado no planejamento."; return; }
+
+        let h = "<table><tr><th>Loja</th><th>Endereço</th><th>GPS</th></tr>";
+        f.forEach(r => {
+            const end = `${r["ENDEREÇO"]}, ${r["NUMERO"]}, ${r["BAIRRO"]}`;
+            const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;
+            h += `<tr><td>${r["Nome da Loja"]}</td><td>${end}</td><td><a href="${link}" target="_blank" class="btn-gps">📍</a></td></tr>`;
+        });
+        res.innerHTML = h + "</table>";
+    });
+
+    // --- ABA 2: FECHAMENTO ---
+    async function buscarFechamento() {
+        const id = document.getElementById('id2').value.trim();
+        const res = document.getElementById('res2');
+        const urlFech = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
+        
+        if(!id) { alert("Digite o ID"); return; }
+        res.innerHTML = "Buscando...";
+
+        try {
+            const r = await fetch(urlFech);
+            const txt = await r.text();
+            // A planilha 2 parece usar vírgula como separador padrão do Google
+            const dados = processarDados(txt, ",");
+            const f = dados.filter(d => d["ID do motorista"] === id);
+
+            if(f.length === 0) { res.innerHTML = "Nenhum fechamento encontrado."; return; }
+
+            let h = "";
+            f.forEach(d => {
+                const end = d["Endereço Completo"];
+                const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;
+                h += `<div class="card">
+                    <b>${d["Loja / Ponto de Coleta"]}</b><br>
+                    <small>${end}</small><br>
+                    <div style="margin-top:10px">Pacotes: ${d["Pacotes Coletados"]}</div>
+                    <a href="${link}" target="_blank" class="btn-gps" style="margin-top:10px; width:100%; text-align:center;">Abrir no Maps</a>
+                </div>`;
+            });
+            res.innerHTML = h;
+        } catch (e) { res.innerText = "Erro de conexão."; }
+    }
+
+    carregarPlan();
 </script>
 </body>
 </html>
