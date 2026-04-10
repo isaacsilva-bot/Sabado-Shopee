@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Logístico</title>
+    <style>
+        :root {
+            --primary-orange: #ff6a00;
+            --dark-orange: #e65c00;
+            --light-orange: #fff5ed;
+            --bg-gray: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-gray);
+            padding-bottom: 70px; /* Espaço para a barra de abas */
+        }
+
+        /* Gerenciamento de Abas */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Barra de Navegação Inferior */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 15px 0;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+            border-top: 3px solid transparent;
+        }
+
+        .tab-item.active {
+            color: var(--primary-orange);
+            border-top: 3px solid var(--primary-orange);
+            background-color: var(--light-orange);
+        }
+
+        /* --- ESTILOS ORIGINAIS UNIFICADOS E ADAPTADOS --- */
+        header { background: var(--primary-orange); color: white; padding: 18px; text-align: center; font-weight: bold; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 15px; font-size: 16px; box-sizing: border-box; }
+        
+        /* Estilos Tela 1 */
+        .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn { display:block; margin-top:10px; padding:12px; border-radius:10px; text-align:center; font-weight:bold; text-decoration:none; }
+        .maps { background: var(--primary-orange); color:white; }
+        .rota { background:white; color:var(--primary-orange); border: 2px solid var(--primary-orange); margin-bottom:15px; }
+        .vazio { color:#666; text-align:center; margin-top: 20px; }
+
+        /* Estilos Tela 2 */
+        .header-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .img-banner { width: 100%; display: block; max-height: 180px; object-fit: cover; }
+        .search-content { padding: 20px; text-align: center; }
+        .card-entrega { background: white; padding: 20px; margin-bottom: 15px; border-radius: 18px; border-left: 8px solid var(--primary-orange); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        .label { font-size: 10px; color: var(--primary-orange); text-transform: uppercase; font-weight: 800; display: block; }
+        .valor { font-size: 15px; color: #222; font-weight: 500; margin-bottom: 10px; display: block; }
+        .pacotes-tag { background: var(--light-orange); color: var(--dark-orange); padding: 10px; border-radius: 10px; text-align: center; font-weight: bold; border: 1px dashed var(--primary-orange); }
+        .btn-mapa { display: inline-block; margin-top: 5px; color: var(--primary-orange); text-decoration: none; font-size: 14px; font-weight: bold; }
+        button.primary-btn { width: 100%; padding: 15px; background: var(--primary-orange); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div id="aba1" class="tab-content active">
+        <header>🚚 Roteiro de Entregas</header>
+        <div class="container">
+            <input type="text" id="idMotorista" placeholder="Digite seu ID para Roteiro...">
+            <div id="resultado1"></div>
+        </div>
+    </div>
+
+    <div id="aba2" class="tab-content">
+        <div class="container">
+            <div class="header-card">
+                <img src="empresa.jpg" alt="Banner Empresa" class="img-banner">
+                <div class="search-content">
+                    <h2 style="color: var(--dark-orange); margin:0 0 10px 0;">Portal de Fechamento</h2>
+                    <input type="text" id="inputID" placeholder="Digite seu ID para Sábado">
+                    <button class="primary-btn" onclick="consultarSabado()">Ver Roteiro de Sábado</button>
+                </div>
+            </div>
+            <div id="resultado2"></div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('aba1', this)">📅 Diário</div>
+        <div class="tab-item" onclick="switchTab('aba2', this)">☀️ Sábado</div>
+    </div>
+
+<script>
+    // --- LÓGICA DE NAVEGAÇÃO ---
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        el.classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    // --- LÓGICA DA ABA 1 (ROTEIRO DIÁRIO) ---
+    const urlDiario = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
+    let dadosDiario = [];
+
+    function parseCSVDiario(texto) {
+        const linhas = texto.split("\n");
+        const headers = linhas[0].split(";");
+        return linhas.slice(1).map(linha => {
+            const colunas = linha.split(";");
+            let obj = {};
+            headers.forEach((h, i) => obj[h.trim()] = colunas[i]);
+            return obj;
+        });
+    }
+
+    async function carregarDadosDiario() {
+        try {
+            const res = await fetch(urlDiario);
+            const texto = await res.text();
+            dadosDiario = parseCSVDiario(texto);
+        } catch (erro) {
+            document.getElementById("resultado1").innerHTML = "<p class='vazio'>Erro ao carregar dados</p>";
+        }
+    }
+
+    function buscarDiario() {
+        const id = document.getElementById("idMotorista").value.trim();
+        const div = document.getElementById("resultado1");
+        if (!id) { div.innerHTML = ""; return; }
+
+        const filtrado = dadosDiario.filter(d => d["ID do motorista"] === id);
+        if (filtrado.length === 0) { div.innerHTML = "<p class='vazio'>Nenhum resultado</p>"; return; }
+
+        let html = "";
+        // Lógica de montar rota simplificada para o exemplo
+        const enderecos = filtrado.map(r => `${r["ENDEREÇO"]} ${r["NUMERO"]}, ${r["BAIRRO"]}, ${r["CEP"]}`);
+        const rotaLink = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(enderecos[0])}&destination=${encodeURIComponent(enderecos[enderecos.length-1])}&waypoints=${enderecos.slice(1,-1).map(e => encodeURIComponent(e)).join('|')}`;
+        
+        html += `<a href="${rotaLink}" target="_blank" class="btn rota">🚀 Iniciar rota completa</a>`;
+
+        filtrado.forEach(r => {
+            const endereco = `${r["ENDEREÇO"]} ${r["NUMERO"]}, ${r["BAIRRO"]}, ${r["CEP"]}`;
+            html += `
+                <div class="card">
+                    <b>${r["Nome da Loja"]}</b><br>
+                    <small>Rota: ${r["Código da sua Rota"]}</small><br>
+                    <span style="font-size:14px">${endereco}</span><br>
+                    <a class="btn maps" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}" target="_blank">📍 Abrir no Maps</a>
+                </div>`;
+        });
+        div.innerHTML = html;
+    }
+
+    // --- LÓGICA DA ABA 2 (SÁBADO) ---
+    async function consultarSabado() {
+        const idBuscado = document.getElementById('inputID').value.trim();
+        const display = document.getElementById('resultado2');
+        const urlSabado = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
+
+        if (!idBuscado) return;
+        display.innerHTML = "<p style='text-align:center;'>Buscando...</p>";
+
+        try {
+            const response = await fetch(urlSabado);
+            const csvText = await response.text();
+            // Regex para tratar CSV com vírgulas dentro de aspas
+            const linhas = csvText.split(/\r?\n/).map(l => l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim()));
+            
+            const cabecalho = linhas[0];
+            const idxID = cabecalho.indexOf("ID do motorista");
+            const meusRegistros = linhas.filter(l => l[idxID] === idBuscado);
+
+            if (meusRegistros.length > 0) {
+                let html = `<div class="resumo">${meusRegistros.length} FECHAMENTOS PARA SÁBADO</div>`;
+                meusRegistros.forEach(dados => {
+                    html += `<div class="card-entrega">`;
+                    cabecalho.forEach((col, i) => {
+                        const valor = dados[i] || '---';
+                        if (col === "Loja / Ponto de Coleta") {
+                            html += `<span class="label">Ponto</span><span class="valor" style="color:var(--dark-orange); font-weight:bold;">${valor}</span>`;
+                        } else if (col === "Endereço Completo") {
+                            html += `<span class="label">Endereço</span><span class="valor">${valor}</span>
+                                     <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(valor)}" target="_blank" class="btn-mapa">📍 Abrir no GPS</a>`;
+                        } else if (col === "Pacotes Coletados") {
+                            html += `<div class="pacotes-tag">Pacotes: ${valor}</div>`;
+                        } else if (["Horário de Visita Programado", "Horário de Funcionamento até"].includes(col)) {
+                            html += `<span class="label">${col}</span><span class="valor">${valor}</span>`;
+                        }
+                    });
+                    html += `</div>`;
+                });
+                display.innerHTML = html;
+            } else {
+                display.innerHTML = "<p style='text-align:center; color:red; font-weight:bold;'>ID não encontrado.</p>";
+            }
+        } catch (e) {
+            display.innerHTML = "<p style='text-align:center;'>Erro de conexão.</p>";
+        }
+    }
+
+    // Inicialização
+    document.getElementById("idMotorista").addEventListener("input", buscarDiario);
+    carregarDadosDiario();
+</script>
+</body>
+</html>
