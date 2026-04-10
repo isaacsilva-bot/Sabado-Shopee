@@ -19,7 +19,7 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; 
             background: var(--bg); 
-            padding-top: 90px; /* Espaço para a barra no topo */
+            padding-top: 90px; 
             color: var(--text); 
             -webkit-font-smoothing: antialiased; 
         }
@@ -48,8 +48,6 @@
             color: #555; 
             cursor: pointer; 
             font-weight: 800; 
-            transition: all 0.2s ease;
-            text-align: center;
             border-bottom: 5px solid transparent;
         }
 
@@ -61,13 +59,13 @@
             border-bottom: 5px solid var(--orange);
         }
 
-        /* CARD VERDE FLUTUANTE */
+        /* CARD VERDE FLUTUANTE (APENAS NA ABA FECHAMENTO) */
         .info-card {
             background: var(--green-bg);
             border-left: 8px solid var(--green-border);
             padding: 20px;
             border-radius: 15px;
-            margin: 10px 0 25px 0;
+            margin: 15px 0 25px 0;
             box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
             animation: float-subtle 3s ease-in-out infinite;
         }
@@ -86,7 +84,7 @@
             50% { transform: translateY(-6px); }
         }
 
-        /* FORMULÁRIO DE BUSCA */
+        /* FORMULÁRIO */
         .search-box { 
             background: white; 
             padding: 20px; 
@@ -104,7 +102,6 @@
             box-sizing: border-box; 
             font-size: 18px; 
             font-weight: bold;
-            color: #000;
         }
         
         button { 
@@ -118,10 +115,9 @@
             font-size: 18px; 
             cursor: pointer; 
             text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(255,106,0,0.3);
         }
 
-        /* CARDS DE RESULTADO */
+        /* RESULTADOS */
         .card-entrega { 
             background: white; 
             padding: 20px; 
@@ -131,21 +127,10 @@
             border-left: 8px solid var(--orange); 
         }
         
-        .rota-badge { 
-            background: #222; 
-            color: white; 
-            padding: 6px 12px; 
-            border-radius: 6px; 
-            font-size: 14px; 
-            font-weight: 800; 
-            display: inline-block; 
-            margin-bottom: 12px; 
-        }
-        
+        .rota-badge { background: #222; color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
         .field-label { font-size: 12px; color: var(--dark-orange); text-transform: uppercase; font-weight: 800; display: block; }
-        .field-value { font-size: 18px; color: #000; font-weight: 700; margin-bottom: 15px; display: block; line-height: 1.3; }
+        .field-value { font-size: 18px; color: #000; font-weight: 700; margin-bottom: 15px; display: block; }
         .ponto-nome { font-size: 22px; color: #000; font-weight: 900; }
-        
         .btn-gps-link { color: #0056b3; font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 5px; margin-top: 10px; text-decoration: underline; }
 
         .hidden { display: none; }
@@ -161,31 +146,24 @@
         </div>
         <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
             <i>🏬</i>
-            <span>FECHAMENTO</span>
+            <span>FECHAMENTO DE PONTO - AGÊNCIAS SHOPEE</span>
         </div>
     </nav>
 
     <div id="aba-plan">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Planejamento de Sábado</h2>
-            
+            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Planejamento deste Sábado</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista1" placeholder="Digite seu ID...">
-                <button onclick="buscarPlanejamento()">CONSULTAR MEU ID</button>
+                <button onclick="buscarPlanejamento()">Consultar meu ID</button>
             </div>
-
-            <div class="info-card">
-                <p>🟢 <strong>IMPORTANTE:</strong> Visite o ponto apenas no horário agendado para que nenhum pacote seja deixado para trás. Pontualidade evita pendências e garante sua performance.</p>
-            </div>
-
             <div id="resultadoPlan"></div>
         </div>
     </div>
 
     <div id="aba-fech" class="hidden">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Fechamento de Ponto</h2>
-            
+            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Horário de Fechamento de Ponto de Coleta</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista2" placeholder="Digite seu ID...">
                 <button onclick="buscarFechamentoSabado()">CONSULTAR MEU ID</button>
@@ -225,12 +203,12 @@
         const resDiv = document.getElementById('resultadoPlan');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando informações...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado no planejamento.</div>"; return; }
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado.</div>"; return; }
             let html = "";
             filtrados.forEach(row => {
                 const end = `${row["ENDEREÇO"]}, ${row["NUMERO"]} - ${row["BAIRRO"]}`;
@@ -242,7 +220,7 @@
                 </div>`;
             });
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao conectar com a planilha."; }
+        } catch (e) { resDiv.innerHTML = "Erro ao carregar dados."; }
     }
 
     async function buscarFechamentoSabado() {
@@ -250,12 +228,12 @@
         const resDiv = document.getElementById('resultadoFech');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando informações...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado no fechamento.</div>"; return; }
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado.</div>"; return; }
             let html = "";
             filtrados.forEach(row => {
                 html += `<div class="card-entrega">
@@ -271,7 +249,7 @@
                 </div>`;
             });
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao buscar seu ID. Por favor, contacte o Analista Isaac Maia ou fale com seu analista direto."; }
+        } catch (e) { resDiv.innerHTML = "Erro ao carregar dados."; }
     }
 </script>
 </body>
