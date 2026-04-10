@@ -6,26 +6,29 @@
     <title>SVP PLANEJAMENTO</title>
     <style>
         :root { --laranja: #ff6a00; --cinza: #f4f4f4; }
-        body { font-family: sans-serif; margin: 0; background: var(--cinza); padding-bottom: 80px; }
-        header { background: var(--laranja); color: white; padding: 20px; text-align: center; font-size: 1.2rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--cinza); padding-bottom: 85px; }
+        header { background: var(--laranja); color: white; padding: 18px; text-align: center; font-size: 1.1rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .card { background: white; padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 6px solid var(--laranja); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; height: 70px; }
-        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; cursor: pointer; }
-        .tab-item.active { color: var(--laranja); border-top: 4px solid var(--laranja); background: #fff5ed; }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ccc; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input:focus { border-color: var(--laranja); box-shadow: 0 0 5px rgba(255, 106, 0, 0.3); }
+        button { width: 100%; padding: 15px; background: var(--laranja); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        button:active { transform: scale(0.98); }
+        .card { background: white; padding: 15px; border-radius: 15px; margin-top: 12px; border-left: 6px solid var(--laranja); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; height: 75px; z-index: 1000; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #777; cursor: pointer; transition: 0.2s; text-align: center; padding: 5px; }
+        .tab-item span { font-size: 20px; margin-bottom: 3px; }
+        .tab-item.active { color: var(--laranja); border-top: 4px solid var(--laranja); background: #fffaf5; }
         .hidden { display: none; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
-        th { background: #eee; }
-        .btn-gps { background: var(--laranja); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; margin-top: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: left; font-size: 13px; }
+        th { background: #fafafa; color: #444; }
+        .btn-gps { background: var(--laranja); color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: bold; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div id="aba-plan">
-    <header>Planejamento de Sábado</header>
+    <header>Planejamento Completo de Sábado</header>
     <div class="container">
         <input type="text" id="id1" placeholder="Digite seu ID de Motorista...">
         <div id="res1"></div>
@@ -33,17 +36,17 @@
 </div>
 
 <div id="aba-fech" class="hidden">
-    <header>Fechamento de Pontos</header>
+    <header>Horários de Fechamentos de Agencia/Ponto de Coleta</header>
     <div class="container">
         <input type="text" id="id2" placeholder="Digite seu ID para Fechamento...">
-        <button onclick="buscarFechamento()">Consultar Roteiro</button>
+        <button onclick="buscarFechamento()">Consultar Fechamento</button>
         <div id="res2"></div>
     </div>
 </div>
 
 <nav class="tab-bar">
     <div class="tab-item active" id="btn1" onclick="mudar(1)"><span>📅</span>Planejamento</div>
-    <div class="tab-item" id="btn2" onclick="mudar(2)"><span>🏬</span>Fechamento</div>
+    <div class="tab-item" id="btn2" onclick="mudar(2)"><span>🏬</span>Fechamentos</div>
 </nav>
 
 <script>
@@ -59,7 +62,7 @@
 
     let banco1 = [];
 
-    async function iniciar() {
+    async function carregarBanco1() {
         try {
             const r = await fetch(url1);
             const t = await r.text();
@@ -70,50 +73,73 @@
                 cabecalho.forEach((h, i) => obj[h] = l[i] ? l[i].trim() : "");
                 return obj;
             });
-        } catch(e) { console.log("Erro Planilha 1"); }
+        } catch(e) { console.error("Erro ao carregar planejamento"); }
     }
 
+    // Busca automática na Aba 1
     document.getElementById('id1').addEventListener('input', function() {
         const id = this.value.trim();
         const res = document.getElementById('res1');
         const f = banco1.filter(d => d["ID do motorista"] === id);
+        
         if(!id || f.length === 0) { res.innerHTML = ""; return; }
         
-        let html = "<table><tr><th>Loja</th><th>GPS</th></tr>";
+        let html = "<table><tr><th>Loja</th><th>Localização</th></tr>";
         f.forEach(r => {
-            const end = encodeURIComponent(`${r["ENDEREÇO"]}, ${r["NUMERO"]}, ${r["BAIRRO"]}`);
-            html += `<tr><td>${r["Nome da Loja"]}</td><td><a href="https://www.google.com/maps/search/?api=1&query=${end}" target="_blank" class="btn-gps">📍 MAPA</a></td></tr>`;
+            const endereco = `${r["ENDEREÇO"]}, ${r["NUMERO"]}, ${r["BAIRRO"]}`;
+            const linkGps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`;
+            html += `<tr>
+                <td><b>${r["Nome da Loja"]}</b></td>
+                <td><a href="${linkGps}" target="_blank" class="btn-gps">📍 MAPA</a></td>
+            </tr>`;
         });
         res.innerHTML = html + "</table>";
     });
 
+    // Busca por botão na Aba 2
     async function buscarFechamento() {
         const id = document.getElementById('id2').value.trim();
         const res = document.getElementById('res2');
-        if(!id) return;
-        res.innerHTML = "Buscando...";
+        if(!id) { alert("Por favor, digite um ID"); return; }
+        res.innerHTML = "<div style='text-align:center; padding:20px;'>Buscando dados...</div>";
 
         try {
             const r = await fetch(url2);
             const t = await r.text();
+            // Regex para lidar com vírgulas dentro de aspas no CSV
             const linhas = t.split("\n").map(l => l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
             const cabecalho = linhas[0].map(h => h.replace(/"/g, '').trim());
-            const idx = cabecalho.indexOf("ID do motorista");
-            const f = linhas.filter(l => l[idx] && l[idx].trim() === id);
+            const idxID = cabecalho.indexOf("ID do motorista");
+            
+            const filtrados = linhas.filter(l => l[idxID] && l[idxID].trim() === id);
 
-            if(f.length === 0) { res.innerHTML = "Nenhum dado encontrado."; return; }
+            if(filtrados.length === 0) { 
+                res.innerHTML = "<div class='card'>Nenhum fechamento encontrado para este ID.</div>"; 
+                return; 
+            }
 
             let html = "";
-            f.forEach(l => {
+            filtrados.forEach(l => {
                 const loja = l[cabecalho.indexOf("Loja / Ponto de Coleta")];
                 const pacotes = l[cabecalho.indexOf("Pacotes Coletados")];
-                html += `<div class="card"><b>Loja:</b> ${loja}<br><b>Pacotes:</b> ${pacotes}</div>`;
+                const endereco = l[cabecalho.indexOf("Endereço Completo")];
+                
+                html += `<div class="card">
+                    <div style="color:var(--laranja); font-size:11px; font-weight:bold; text-transform:uppercase;">Agência/Ponto</div>
+                    <div style="font-size:16px; font-weight:bold; margin-bottom:8px;">${loja}</div>
+                    <div style="font-size:13px; color:#666; margin-bottom:10px;">${endereco}</div>
+                    <div style="background:#f9f9f9; padding:8px; border-radius:8px; font-size:14px;">
+                        <b>📦 Pacotes:</b> ${pacotes}
+                    </div>
+                </div>`;
             });
             res.innerHTML = html;
-        } catch(e) { res.innerHTML = "Erro de conexão."; }
+        } catch(e) { 
+            res.innerHTML = "<div class='card'>Erro ao conectar com a base de dados.</div>"; 
+        }
     }
 
-    iniciar();
+    carregarBanco1();
 </script>
 </body>
 </html>
