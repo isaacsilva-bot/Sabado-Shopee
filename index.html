@@ -5,36 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SVP Planejamento</title>
     <style>
-        :root { --orange: #ff6a00; --dark-orange: #e65c00; --bg: #f5f7fa; --text: #333; }
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background: var(--bg); padding-bottom: 100px; color: var(--text); -webkit-font-smoothing: antialiased; }
+        :root { 
+            --orange: #ff6a00; 
+            --dark-orange: #d45600; /* Escurecido para melhor leitura */
+            --bg: #f5f7fa; 
+            --text: #222; /* Texto mais escuro para contraste */
+        }
         
-        .page-title { background: var(--orange); color: white; padding: 15px; text-align: center; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            background: var(--bg); 
+            padding-top: 85px; /* Espaço para a barra no topo */
+            color: var(--text); 
+            -webkit-font-smoothing: antialiased; 
+        }
 
         .container { padding: 15px; max-width: 600px; margin: auto; box-sizing: border-box; }
 
         /* Formulário */
-        .search-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; position: relative; z-index: 5; }
-        input { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #e0e0e0; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
-        button { width: 100%; padding: 16px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(255,106,0,0.2); }
+        .search-box { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+        }
+        
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: 2px solid #ddd; 
+            margin-bottom: 12px; 
+            box-sizing: border-box; 
+            font-size: 18px; /* Fonte maior para leitura */
+            font-weight: bold;
+            background: #fdfdfd; 
+        }
+        
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            background: var(--orange); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 900; 
+            font-size: 18px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            box-shadow: 0 4px 12px rgba(255,106,0,0.3); 
+        }
 
         /* Cards Profissionais */
-        .card-entrega { background: white; padding: 20px; margin-bottom: 15px; border-radius: 18px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--orange); }
-        .rota-badge { background: #333; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 12px; }
-        .field-label { font-size: 11px; color: var(--orange); text-transform: uppercase; font-weight: 800; display: block; }
-        .field-value { font-size: 15px; color: #222; font-weight: 600; margin-bottom: 10px; display: block; }
-        .ponto-nome { font-size: 17px; color: var(--dark-orange); font-weight: 800; }
-        .btn-gps-link { color: var(--orange); text-decoration: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+        .card-entrega { 
+            background: white; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border-radius: 18px; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08); 
+            border-left: 8px solid var(--orange); 
+        }
+        
+        .rota-badge { 
+            background: #222; 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            font-size: 14px; 
+            font-weight: 800; 
+            display: inline-block; 
+            margin-bottom: 12px; 
+        }
+        
+        .field-label { 
+            font-size: 12px; 
+            color: var(--dark-orange); 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            display: block; 
+            margin-bottom: 2px;
+        }
+        
+        .field-value { 
+            font-size: 17px; 
+            color: #000; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            display: block; 
+            line-height: 1.3;
+        }
+        
+        .ponto-nome { font-size: 20px; color: #000; font-weight: 900; }
+        
+        .btn-gps-link { 
+            color: #0056b3; /* Cor padrão de link para melhor reconhecimento */
+            text-decoration: underline; 
+            font-weight: 800; 
+            font-size: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            margin-top: 10px; 
+        }
 
-        /* BARRA DE NAVEGAÇÃO */
+        /* BARRA DE NAVEGAÇÃO NO TOPO */
         .tab-bar { 
             position: fixed; 
-            bottom: 0; 
+            top: 0; /* Movido para o topo */
             width: 100%; 
             background: white; 
             display: flex; 
-            height: 85px; 
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); 
-            z-index: 100; 
+            height: 80px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
+            z-index: 1000; 
         }
         
         .tab-item { 
@@ -44,61 +129,65 @@
             align-items: center; 
             justify-content: center; 
             font-size: 14px; 
-            color: #777; 
+            color: #555; 
             cursor: pointer; 
-            font-weight: bold; 
-            transition: all 0.3s ease;
+            font-weight: 800; 
+            transition: all 0.2s ease;
+            text-align: center;
+            padding: 5px;
+            border-bottom: 4px solid transparent;
         }
 
         .tab-item i { 
             font-style: normal; 
-            font-size: 28px; 
+            font-size: 24px; 
             margin-bottom: 2px; 
         }
 
         .tab-item.active { 
-            background: var(--orange); 
-            color: white; 
+            background: #fff3eb;
+            color: var(--orange); 
+            border-bottom: 4px solid var(--orange);
         }
 
         .hidden { display: none; }
-        .loader { text-align: center; padding: 20px; color: #666; font-weight: bold; }
+        .loader { text-align: center; padding: 40px; color: #222; font-weight: bold; font-size: 18px; }
     </style>
 </head>
 <body>
 
+    <nav class="tab-bar">
+        <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
+            <i>📅</i>
+            <span>PLANEJAMENTO</span>
+        </div>
+        <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
+            <i>🏬</i>
+            <span>FECHAMENTO</span>
+        </div>
+    </nav>
+
     <div id="aba-plan">
-        <div class="page-title">Planejamento Completo de Sábado</div>
         <div class="container">
+            <h2 style="text-align:center; font-size: 18px;">Planejamento de Sábado</h2>
             <div class="search-box">
-                <input type="text" id="idMotorista1" placeholder="Digite seu ID de Motorista...">
-                <button onclick="buscarPlanejamento()">Consultar meu ID</button>
+                <input type="number" id="idMotorista1" placeholder="Digite seu ID...">
+                <button onclick="buscarPlanejamento()">CONSULTAR PLANEJAMENTO</button>
             </div>
             <div id="resultadoPlan"></div>
         </div>
     </div>
 
     <div id="aba-fech" class="hidden">
-        <div class="page-title">Fechamento de Agencia/Ponto</div>
         <div class="container">
+            <h2 style="text-align:center; font-size: 18px;">Fechamento Shopee</h2>
             <div class="search-box">
-                <input type="text" id="idMotorista2" placeholder="Digite seu ID de Motorista...">
-                <button onclick="buscarFechamentoSabado()">Consultar meu ID</button>
+                <input type="number" id="idMotorista2" placeholder="Digite seu ID...">
+                <button onclick="buscarFechamentoSabado()">CONSULTAR FECHAMENTO</button>
             </div>
             <div id="resultadoFech"></div>
         </div>
     </div>
-
-    <nav class="tab-bar">
-        <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
-            <i>📅</i>
-            <span>Planejamento</span>
-        </div>
-        <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
-            <i>🏬</i>
-            <span>Fechamento de Ponto/Agencia Shopee</span>
-        </div>
-    </nav>
 
 <script>
     function switchTab(tab) {
@@ -126,12 +215,12 @@
         const resDiv = document.getElementById('resultadoPlan');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando dados...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>ID não localizado.</div>"; return; }
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado.</div>"; return; }
             let html = "";
             filtrados.forEach(row => {
                 const end = `${row["ENDEREÇO"]}, ${row["NUMERO"]} - ${row["BAIRRO"]}`;
@@ -139,11 +228,11 @@
                     <div class="rota-badge">ROTA: ${row["ROTA"] || "SVP-SAB"}</div>
                     <span class="field-label">LOJA</span><span class="field-value ponto-nome">${row["Nome da Loja"]}</span>
                     <span class="field-label">ENDEREÇO COMPLETO</span><span class="field-value">${end}</span>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}" target="_blank" class="btn-gps-link">📍 ABRIR NO GPS</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}" target="_blank" class="btn-gps-link">📍 ABRIR NO GOOGLE MAPS</a>
                 </div>`;
             });
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao carregar."; }
+        } catch (e) { resDiv.innerHTML = "Erro de conexão."; }
     }
 
     async function buscarFechamentoSabado() {
@@ -151,25 +240,28 @@
         const resDiv = document.getElementById('resultadoFech');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando dados...</div>";
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>ID não localizado.</div>"; return; }
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado.</div>"; return; }
             let html = "";
             filtrados.forEach(row => {
                 html += `<div class="card-entrega">
                     <div class="rota-badge">ROTA: ${row["ROTA"] || "FECH"}</div>
-                    <span class="field-label">PONTO</span><span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
-                    <div style="display:flex; gap:10px;"><div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">${row["Horário de Visita Programado"] || "---"}</span></div><div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div></div>
+                    <span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">${row["Horário de Visita Programado"] || "---"}</span></div>
+                        <div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div>
+                    </div>
                     <span class="field-label">ENDEREÇO</span><span class="field-value">${row["Endereço Completo"]}</span>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row["Endereço Completo"])}" target="_blank" class="btn-gps-link">📍 ABRIR NO GPS</a>
-                    <div style="background:#fff5ed; color:var(--dark-orange); padding:10px; border-radius:10px; text-align:center; font-weight:bold; border:1px dashed var(--orange); margin-top:10px;">Pacotes: ${row["Pacotes Coletados"] || "---"}</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row["Endereço Completo"])}" target="_blank" class="btn-gps-link">📍 ABRIR NO GOOGLE MAPS</a>
+                    <div style="background:#fff5ed; color:var(--dark-orange); padding:15px; border-radius:10px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:18px;">Pacotes: ${row["Pacotes Coletados"] || "---"}</div>
                 </div>`;
             });
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao carregar."; }
+        } catch (e) { resDiv.innerHTML = "Erro de conexão."; }
     }
 </script>
 </body>
