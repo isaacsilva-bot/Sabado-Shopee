@@ -26,29 +26,28 @@
         button { width: 100%; padding: 16px; background: var(--orange); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 12px rgba(255,106,0,0.2); }
         button:active { transform: scale(0.98); background: var(--dark-orange); }
 
-        /* Resultados */
+        /* Estilo dos Cards Profissionais */
         .resumo-topo { text-align: center; font-weight: bold; color: #555; margin: 10px 0 20px 0; text-transform: uppercase; font-size: 14px; }
-        .card-entrega { background: white; padding: 25px; margin-bottom: 20px; border-radius: 20px; border-left: 8px solid var(--orange); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .field-label { font-size: 11px; color: var(--orange); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 2px; }
+        
+        .card-entrega { background: white; padding: 25px; margin-bottom: 20px; border-radius: 20px; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border-left: 8px solid var(--orange); }
+        
+        .rota-badge { background: #333; color: white; padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+
+        .field-group { margin-bottom: 15px; }
+        .field-label { font-size: 11px; color: var(--orange); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 2px; }
         .field-value { font-size: 15px; color: #222; font-weight: 600; line-height: 1.4; display: block; }
         .ponto-nome { font-size: 18px; color: var(--dark-orange); font-weight: 800; }
-        .btn-gps-link { color: var(--orange); text-decoration: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; margin: 15px 0; }
-        .pacotes-tag { background: #fff5ed; color: var(--dark-orange); padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; border: 1px dashed var(--orange); font-size: 16px; }
 
-        /* Tabela Aba 1 */
-        .table-res { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .table-res th { background: #f8f9fa; padding: 15px; text-align: left; font-size: 13px; color: #666; }
-        .table-res td { padding: 15px; border-top: 1px solid #eee; font-size: 14px; }
-        .btn-mapa-sáb { background: var(--orange); color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; }
+        .btn-gps-link { color: var(--orange); text-decoration: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; margin-top: 10px; }
 
-        /* Navegação */
+        /* Barra de Navegação */
         .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; height: 75px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top: 1px solid #eee; z-index: 100; }
-        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: #a0a0a0; cursor: pointer; font-weight: 600; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: #a0a0a0; cursor: pointer; font-weight: 600; padding: 10px; transition: 0.3s; }
         .tab-item i { font-style: normal; font-size: 24px; margin-bottom: 4px; }
         .tab-item.active { color: var(--orange); }
 
         .hidden { display: none; }
-        .loader { text-align: center; padding: 30px; color: #666; }
+        .loader { text-align: center; padding: 30px; color: #666; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -61,7 +60,7 @@
         <div class="page-title">Planejamento Completo de Sábado</div>
         <div class="container">
             <div class="search-box">
-                <input type="text" id="idMotorista1" placeholder="Digite seu ID...">
+                <input type="text" id="idMotorista1" placeholder="Digite seu ID de Motorista...">
                 <button onclick="buscarPlanejamento()">Consultar meu ID</button>
             </div>
             <div id="resultadoPlan"></div>
@@ -70,12 +69,12 @@
 
     <div id="aba-fech" class="hidden">
         <div class="banner-container">
-            <img src="empresa.jpg" alt="Banner" class="banner-img">
+            <img src="empresa.jpg" alt="Banner SVP" class="banner-img">
         </div>
         <div class="page-title">Fechamento de Agencia/Ponto de Coleta</div>
         <div class="container">
             <div class="search-box">
-                <input type="text" id="idMotorista2" placeholder="Digite seu ID...">
+                <input type="text" id="idMotorista2" placeholder="Digite seu ID para Sábado...">
                 <button onclick="buscarFechamentoSabado()">Consultar meu ID</button>
             </div>
             <div id="resultadoFech"></div>
@@ -108,53 +107,91 @@
         });
     }
 
+    // ABA 1 - PLANEJAMENTO PROFISSIONAL
     async function buscarPlanejamento() {
         const id = document.getElementById('idMotorista1').value.trim();
         const resDiv = document.getElementById('resultadoPlan');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
+        
         if (!id) return;
         resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "ID não encontrado."; return; }
-            let html = "<table class='table-res'><thead><tr><th>Loja</th><th>GPS</th></tr></thead><tbody>";
+            
+            if (filtrados.length === 0) {
+                resDiv.innerHTML = "<div class='card-entrega'>ID não encontrado.</div>";
+                return;
+            }
+
+            let html = `<div class="resumo-topo">${filtrados.length} ENTREGAS LOCALIZADAS</div>`;
             filtrados.forEach(row => {
                 const end = `${row["ENDEREÇO"]}, ${row["NUMERO"]} - ${row["BAIRRO"]}`;
-                html += `<tr><td><b>${row["Nome da Loja"]}</b><br><small>${end}</small></td>
-                <td><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}" target="_blank" class="btn-mapa-sáb">📍 MAPA</a></td></tr>`;
+                const rota = row["ROTA"] || row["Código da Rota"] || "ROTA NÃO INFORMADA";
+                
+                html += `
+                    <div class="card-entrega">
+                        <div class="rota-badge">ROTA: ${rota}</div>
+                        <div class="field-group">
+                            <span class="field-label">LOJA</span>
+                            <span class="field-value ponto-nome">${row["Nome da Loja"]}</span>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">ENDEREÇO COMPLETO</span>
+                            <span class="field-value">${end}</span>
+                        </div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}" target="_blank" class="btn-gps-link">📍 Abrir no GPS</a>
+                    </div>`;
             });
-            resDiv.innerHTML = html + "</tbody></table>";
-        } catch (e) { resDiv.innerHTML = "Erro ao carregar."; }
+            resDiv.innerHTML = html;
+        } catch (e) { resDiv.innerHTML = "Erro ao carregar dados."; }
     }
 
+    // ABA 2 - FECHAMENTO (MANTIDA)
     async function buscarFechamentoSabado() {
         const id = document.getElementById('idMotorista2').value.trim();
         const resDiv = document.getElementById('resultadoFech');
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
+        
         if (!id) return;
         resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+
         try {
             const resp = await fetch(url);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "ID não encontrado."; return; }
-            let html = "";
+            
+            if (filtrados.length === 0) {
+                resDiv.innerHTML = "<div class='card-entrega'>ID não encontrado.</div>";
+                return;
+            }
+
+            let html = `<div class="resumo-topo">${filtrados.length} FECHAMENTOS PARA SÁBADO</div>`;
             filtrados.forEach(row => {
                 const end = row["Endereço Completo"];
+                const rota = row["ROTA"] || row["Código da Rota"] || "---";
+                
                 html += `
                     <div class="card-entrega">
-                        <span class="field-label">PONTO</span>
-                        <span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
+                        <div class="rota-badge">ROTA: ${rota}</div>
+                        <div class="field-group">
+                            <span class="field-label">PONTO</span>
+                            <span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
+                        </div>
+                        <div style="display:flex; gap:10px;">
                             <div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">${row["Horário de Visita Programado"] || "---"}</span></div>
                             <div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div>
                         </div>
-                        <span class="field-label" style="margin-top:10px;">ENDEREÇO</span>
-                        <span class="field-value">${end}</span>
+                        <div class="field-group" style="margin-top:10px;">
+                            <span class="field-label">ENDEREÇO</span>
+                            <span class="field-value">${end}</span>
+                        </div>
                         <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}" target="_blank" class="btn-gps-link">📍 Abrir no GPS</a>
-                        <div class="pacotes-tag">Pacotes: ${row["Pacotes Coletados"] || "---"}</div>
+                        <div style="background:#fff5ed; color:var(--dark-orange); padding:10px; border-radius:10px; text-align:center; font-weight:bold; border:1px dashed var(--orange); margin-top:10px;">
+                            Pacotes: ${row["Pacotes Coletados"] || "---"}
+                        </div>
                     </div>`;
             });
             resDiv.innerHTML = html;
