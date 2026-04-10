@@ -5,139 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVP PLANEJAMENTO</title>
     <style>
-        :root { --orange: #ff6a00; --dark: #333; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f4f4f4; padding-bottom: 80px; }
-        header { background: var(--orange); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; }
-        .container { padding: 15px; max-width: 600px; margin: auto; }
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 15px; font-size: 16px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        
-        /* Abas */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
-        .tab-item { flex: 1; padding: 15px; text-align: center; color: #666; cursor: pointer; font-size: 13px; font-weight: bold; border-top: 3px solid transparent; }
-        .tab-item.active { color: var(--orange); border-top: 3px solid var(--orange); background: #fff5ed; }
-
-        /* Resultados */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; margin-top: 10px; font-size: 13px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #f8f8f8; }
-        .btn-gps { background: var(--orange); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 12px; }
-        .card { background: white; padding: 15px; border-radius: 12px; border-left: 5px solid var(--orange); margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .status-msg { text-align: center; color: #666; padding: 20px; font-size: 14px; }
+        body { font-family: sans-serif; margin: 0; background: #f4f4f4; padding-bottom: 70px; }
+        header { background: #ff6a00; color: white; padding: 20px; text-align: center; font-weight: bold; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #ff6a00; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .card { background: white; padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 5px solid #ff6a00; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; }
+        .tab-item { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-size: 14px; font-weight: bold; color: #666; }
+        .tab-item.active { color: #ff6a00; background: #fff5ed; border-top: 3px solid #ff6a00; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <div id="aba-plan" class="tab-content active">
-        <header>Planejamento de Sábado</header>
-        <div class="container">
-            <input type="text" id="id1" placeholder="Digite seu ID...">
-            <div id="res1" class="status-msg">Aguardando ID...</div>
-        </div>
+<div id="aba1">
+    <header>Planejamento de Sábado</header>
+    <div class="container">
+        <input type="text" id="id1" placeholder="Digite seu ID...">
+        <div id="res1"></div>
     </div>
+</div>
 
-    <div id="aba-fech" class="tab-content">
-        <header>Fechamento de Pontos</header>
-        <div class="container">
-            <input type="text" id="id2" placeholder="Digite seu ID...">
-            <button onclick="buscarFechamento()">Consultar Fechamento</button>
-            <div id="res2" class="status-msg">Aguardando consulta...</div>
-        </div>
+<div id="aba2" class="hidden">
+    <header>Fechamento de Pontos</header>
+    <div class="container">
+        <input type="text" id="id2" placeholder="Digite seu ID...">
+        <button onclick="buscarAba2()">Consultar</button>
+        <div id="res2"></div>
     </div>
+</div>
 
-    <nav class="tab-bar">
-        <div class="tab-item active" onclick="nav('aba-plan', this)">📅 Planejamento</div>
-        <div class="tab-item" onclick="nav('aba-fech', this)">🏬 Fechamento</div>
-    </nav>
+<div class="tab-bar">
+    <div class="tab-item active" id="btn1" onclick="show(1)">📅 Planejamento</div>
+    <div class="tab-item" id="btn2" onclick="show(2)">🏬 Fechamento</div>
+</div>
 
 <script>
-    function nav(id, el) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
+    function show(n) {
+        document.getElementById('aba1').classList.toggle('hidden', n !== 1);
+        document.getElementById('aba2').classList.toggle('hidden', n !== 2);
+        document.getElementById('btn1').classList.toggle('active', n === 1);
+        document.getElementById('btn2').classList.toggle('active', n === 2);
     }
 
-    // Função de tratamento de CSV Universal
-    function processarDados(csv, separador) {
-        const linhas = csv.split(/\r?\n/).filter(l => l.trim() !== "");
-        const headers = linhas[0].split(separador).map(h => h.trim().replace(/"/g, ''));
-        return linhas.slice(1).map(linha => {
-            const cols = linha.split(separador);
-            let obj = {};
-            headers.forEach((h, i) => {
-                obj[h] = cols[i] ? cols[i].trim().replace(/"/g, '') : "";
-            });
-            return obj;
-        });
-    }
+    const url1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
+    const url2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
 
-    // --- ABA 1: PLANEJAMENTO ---
-    const urlPlan = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
-    let bancoPlan = [];
+    let dados1 = [];
 
-    async function carregarPlan() {
+    async function load1() {
         try {
-            const r = await fetch(urlPlan);
-            const txt = await r.text();
-            bancoPlan = processarDados(txt, ",");
-            console.log("Planilha 1 carregada");
-        } catch (e) { document.getElementById('res1').innerText = "Erro ao conectar com a planilha 1."; }
-    }
-
-    document.getElementById('id1').addEventListener('input', function() {
-        const id = this.value.trim();
-        const res = document.getElementById('res1');
-        if(!id) { res.innerText = "Digite seu ID..."; return; }
-        
-        const f = bancoPlan.filter(d => d["ID do motorista"] === id);
-        if(f.length === 0) { res.innerText = "ID não encontrado no planejamento."; return; }
-
-        let h = "<table><tr><th>Loja</th><th>Endereço</th><th>GPS</th></tr>";
-        f.forEach(r => {
-            const end = `${r["ENDEREÇO"]}, ${r["NUMERO"]}, ${r["BAIRRO"]}`;
-            const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;
-            h += `<tr><td>${r["Nome da Loja"]}</td><td>${end}</td><td><a href="${link}" target="_blank" class="btn-gps">📍</a></td></tr>`;
-        });
-        res.innerHTML = h + "</table>";
-    });
-
-    // --- ABA 2: FECHAMENTO ---
-    async function buscarFechamento() {
-        const id = document.getElementById('id2').value.trim();
-        const res = document.getElementById('res2');
-        const urlFech = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
-        
-        if(!id) { alert("Digite o ID"); return; }
-        res.innerHTML = "Buscando...";
-
-        try {
-            const r = await fetch(urlFech);
-            const txt = await r.text();
-            // A planilha 2 parece usar vírgula como separador padrão do Google
-            const dados = processarDados(txt, ",");
-            const f = dados.filter(d => d["ID do motorista"] === id);
-
-            if(f.length === 0) { res.innerHTML = "Nenhum fechamento encontrado."; return; }
-
-            let h = "";
-            f.forEach(d => {
-                const end = d["Endereço Completo"];
-                const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(end)}`;
-                h += `<div class="card">
-                    <b>${d["Loja / Ponto de Coleta"]}</b><br>
-                    <small>${end}</small><br>
-                    <div style="margin-top:10px">Pacotes: ${d["Pacotes Coletados"]}</div>
-                    <a href="${link}" target="_blank" class="btn-gps" style="margin-top:10px; width:100%; text-align:center;">Abrir no Maps</a>
-                </div>`;
-            });
-            res.innerHTML = h;
-        } catch (e) { res.innerText = "Erro de conexão."; }
-    }
-
-    carregarPlan();
-</script>
-</body>
-</html>
+            const r = await fetch(url1);
+            const t = await r.text();
+            const rows = t.split("\n").map(row => row.split(","));
+            const headers = rows[0].map(h => h.trim());
+            dados1 = rows.slice(1).map(row => {
