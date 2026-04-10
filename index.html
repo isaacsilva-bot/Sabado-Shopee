@@ -5,48 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVP PLANEJAMENTO</title>
     <style>
-        body { font-family: sans-serif; margin: 0; background: #f4f4f4; padding-bottom: 70px; }
-        header { background: #ff6a00; color: white; padding: 20px; text-align: center; font-weight: bold; }
+        :root { --laranja: #ff6a00; --cinza: #f4f4f4; }
+        body { font-family: sans-serif; margin: 0; background: var(--cinza); padding-bottom: 80px; }
+        header { background: var(--laranja); color: white; padding: 20px; text-align: center; font-size: 1.2rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #ff6a00; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .card { background: white; padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 5px solid #ff6a00; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; }
-        .tab-item { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-size: 14px; font-weight: bold; color: #666; }
-        .tab-item.active { color: #ff6a00; background: #fff5ed; border-top: 3px solid #ff6a00; }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: var(--laranja); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .card { background: white; padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 6px solid var(--laranja); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; height: 70px; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #666; cursor: pointer; }
+        .tab-item.active { color: var(--laranja); border-top: 4px solid var(--laranja); background: #fff5ed; }
         .hidden { display: none; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; font-size: 12px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-top: 10px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
+        th { background: #eee; }
+        .btn-gps { background: var(--laranja); color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; display: inline-block; }
     </style>
 </head>
 <body>
 
-<div id="aba1">
+<div id="aba-plan">
     <header>Planejamento de Sábado</header>
     <div class="container">
-        <input type="text" id="id1" placeholder="Digite seu ID...">
+        <input type="text" id="id1" placeholder="Digite seu ID de Motorista...">
         <div id="res1"></div>
     </div>
 </div>
 
-<div id="aba2" class="hidden">
+<div id="aba-fech" class="hidden">
     <header>Fechamento de Pontos</header>
     <div class="container">
-        <input type="text" id="id2" placeholder="Digite seu ID...">
-        <button onclick="buscarAba2()">Consultar</button>
+        <input type="text" id="id2" placeholder="Digite seu ID para Fechamento...">
+        <button onclick="buscarFechamento()">Consultar Roteiro</button>
         <div id="res2"></div>
     </div>
 </div>
 
-<div class="tab-bar">
-    <div class="tab-item active" id="btn1" onclick="show(1)">📅 Planejamento</div>
-    <div class="tab-item" id="btn2" onclick="show(2)">🏬 Fechamento</div>
-</div>
+<nav class="tab-bar">
+    <div class="tab-item active" id="btn1" onclick="mudar(1)"><span>📅</span>Planejamento</div>
+    <div class="tab-item" id="btn2" onclick="mudar(2)"><span>🏬</span>Fechamento</div>
+</nav>
 
 <script>
-    function show(n) {
-        document.getElementById('aba1').classList.toggle('hidden', n !== 1);
-        document.getElementById('aba2').classList.toggle('hidden', n !== 2);
+    function mudar(n) {
+        document.getElementById('aba-plan').classList.toggle('hidden', n !== 1);
+        document.getElementById('aba-fech').classList.toggle('hidden', n !== 2);
         document.getElementById('btn1').classList.toggle('active', n === 1);
         document.getElementById('btn2').classList.toggle('active', n === 2);
     }
@@ -54,12 +57,63 @@
     const url1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
     const url2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
 
-    let dados1 = [];
+    let banco1 = [];
 
-    async function load1() {
+    async function iniciar() {
         try {
             const r = await fetch(url1);
             const t = await r.text();
-            const rows = t.split("\n").map(row => row.split(","));
-            const headers = rows[0].map(h => h.trim());
-            dados1 = rows.slice(1).map(row => {
+            const linhas = t.split("\n").map(l => l.split(","));
+            const cabecalho = linhas[0].map(h => h.trim());
+            banco1 = linhas.slice(1).map(l => {
+                let obj = {};
+                cabecalho.forEach((h, i) => obj[h] = l[i] ? l[i].trim() : "");
+                return obj;
+            });
+        } catch(e) { console.log("Erro Planilha 1"); }
+    }
+
+    document.getElementById('id1').addEventListener('input', function() {
+        const id = this.value.trim();
+        const res = document.getElementById('res1');
+        const f = banco1.filter(d => d["ID do motorista"] === id);
+        if(!id || f.length === 0) { res.innerHTML = ""; return; }
+        
+        let html = "<table><tr><th>Loja</th><th>GPS</th></tr>";
+        f.forEach(r => {
+            const end = encodeURIComponent(`${r["ENDEREÇO"]}, ${r["NUMERO"]}, ${r["BAIRRO"]}`);
+            html += `<tr><td>${r["Nome da Loja"]}</td><td><a href="https://www.google.com/maps/search/?api=1&query=${end}" target="_blank" class="btn-gps">📍 MAPA</a></td></tr>`;
+        });
+        res.innerHTML = html + "</table>";
+    });
+
+    async function buscarFechamento() {
+        const id = document.getElementById('id2').value.trim();
+        const res = document.getElementById('res2');
+        if(!id) return;
+        res.innerHTML = "Buscando...";
+
+        try {
+            const r = await fetch(url2);
+            const t = await r.text();
+            const linhas = t.split("\n").map(l => l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+            const cabecalho = linhas[0].map(h => h.replace(/"/g, '').trim());
+            const idx = cabecalho.indexOf("ID do motorista");
+            const f = linhas.filter(l => l[idx] && l[idx].trim() === id);
+
+            if(f.length === 0) { res.innerHTML = "Nenhum dado encontrado."; return; }
+
+            let html = "";
+            f.forEach(l => {
+                const loja = l[cabecalho.indexOf("Loja / Ponto de Coleta")];
+                const pacotes = l[cabecalho.indexOf("Pacotes Coletados")];
+                html += `<div class="card"><b>Loja:</b> ${loja}<br><b>Pacotes:</b> ${pacotes}</div>`;
+            });
+            res.innerHTML = html;
+        } catch(e) { res.innerHTML = "Erro de conexão."; }
+    }
+
+    iniciar();
+</script>
+</body>
+</html>
