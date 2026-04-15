@@ -3,165 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🚚 Planejamento de Coletas Shopee Sábado</title>
+    <title>🚚 Planejamento Shopee</title>
     <style>
-        :root { 
-            --orange: #ff6a00; 
-            --dark-orange: #d45600; 
-            --bg: #f5f7fa; 
-            --text: #1a1a1a; 
-            --green-bg: #d4edda;
-            --green-border: #28a745;
-            --green-text: #155724;
-        }
+        :root { --orange: #ff6a00; --bg: #f5f7fa; }
+        body { font-family: sans-serif; margin: 0; background: var(--bg); padding-top: 90px; }
+        .container { padding: 15px; max-width: 800px; margin: auto; }
         
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            background: var(--bg); 
-            padding-top: 90px; 
-            color: var(--text); 
-            -webkit-font-smoothing: antialiased; 
-        }
+        /* BARRA SUPERIOR */
+        .tab-bar { position: fixed; top: 0; width: 100%; background: white; display: flex; height: 80px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 1000; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; text-align: center; }
+        .tab-item.active { color: var(--orange); border-bottom-color: var(--orange); background: #fff3eb; }
 
-        .container { padding: 15px; max-width: 600px; margin: auto; box-sizing: border-box; }
+        /* FORM */
+        .search-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        input { width: 100%; padding: 15px; border-radius: 8px; border: 2px solid #ddd; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; }
+        button { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        /* BARRA DE NAVEGAÇÃO SUPERIOR */
-        .tab-bar { 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            background: white; 
-            display: flex; 
-            height: 80px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
-            z-index: 1000; 
-        }
-        
-        .tab-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 13px; 
-            color: #555; 
-            cursor: pointer; 
-            font-weight: 800; 
-            border-bottom: 5px solid transparent;
-            text-align: center;
-            padding: 5px;
-        }
-
-        .tab-item i { font-style: normal; font-size: 24px; margin-bottom: 2px; }
-
-        .tab-item.active { 
-            background: #fff3eb;
-            color: var(--orange); 
-            border-bottom: 5px solid var(--orange);
-        }
-
-        /* CARD VERDE FLUTUANTE */
-        .info-card {
-            background: var(--green-bg);
-            border-left: 8px solid var(--green-border);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0 25px 0;
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
-            animation: float-subtle 3s ease-in-out infinite;
-        }
-
-        .info-card p {
-            margin: 0; font-size: 16px; color: var(--green-text);
-            line-height: 1.5; font-weight: 800; text-align: center;
-        }
-
-        @keyframes float-subtle {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        /* FORMULÁRIO */
-        .search-box { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            margin-bottom: 15px;
-        }
-        
-        input { 
-            width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ccc; 
-            margin-bottom: 12px; box-sizing: border-box; font-size: 18px; font-weight: bold;
-        }
-        
-        button { 
-            width: 100%; padding: 18px; background: var(--orange); color: white; border: none; 
-            border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* ESTILO TABELA (VISÃO PLANILHA) */
-        .tabela-wrapper { overflow-x: auto; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 10px; }
-        .tabela-plan { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
-        .tabela-plan thead { background: #444; color: white; }
-        .tabela-plan th, .tabela-plan td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; }
-        .tabela-plan tr:nth-child(even) { background-color: #f9f9f9; }
-        .col-seq { font-weight: 900; color: var(--orange); text-align: center; }
-        .col-loja { font-weight: 800; color: #000; }
+        /* TABELA */
+        .tabela-wrapper { overflow-x: auto; background: white; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 450px; }
+        th { background: #444; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:nth-child(even) { background: #fafafa; }
+        .seq { font-weight: bold; color: var(--orange); text-align: center; }
 
         /* CARDS FECHAMENTO */
-        .card-entrega { 
-            background: white; padding: 20px; margin-bottom: 15px; border-radius: 18px; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08); border-left: 8px solid var(--orange); 
-        }
-        
-        .rota-badge { background: #222; color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
-        .field-label { font-size: 12px; color: var(--dark-orange); text-transform: uppercase; font-weight: 800; display: block; }
-        .field-value { font-size: 18px; color: #000; font-weight: 700; margin-bottom: 15px; display: block; }
-        .ponto-nome { font-size: 22px; color: #000; font-weight: 900; }
-        .btn-gps-link { color: #0056b3; font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 5px; margin-top: 10px; text-decoration: underline; }
+        .card { background: white; padding: 15px; border-radius: 12px; border-left: 6px solid var(--orange); margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .field-label { font-size: 11px; color: #888; font-weight: bold; text-transform: uppercase; }
+        .field-value { font-size: 16px; font-weight: bold; display: block; margin-bottom: 8px; }
 
         .hidden { display: none; }
-        .loader { text-align: center; padding: 40px; color: #222; font-weight: bold; font-size: 18px; }
+        .loader { text-align: center; padding: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <nav class="tab-bar">
-        <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
-            <i>📅</i>
-            <span>PLANEJAMENTO DE COLETAS DO SÁBADO</span>
-        </div>
-        <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
-            <i>🏬</i>
-            <span>HORÁRIO DE VISITA DE PONTOS DE COLETA</span>
-        </div>
+        <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">📅 PLANEJAMENTO</div>
+        <div class="tab-item" id="btnFech" onclick="switchTab('fech')">🏬 HORÁRIOS</div>
     </nav>
 
-    <div id="aba-plan">
-        <div class="container" style="max-width: 800px;">
-            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Planejamento deste Sábado</h2>
-            <div class="search-box">
-                <input type="number" id="idMotorista1" placeholder="Digite seu ID aqui">
-                <button onclick="buscarPlanejamento()">Consultar meu ID 🚛</button>
-            </div>
-            <div id="resultadoPlan"></div>
+    <div id="aba-plan" class="container">
+        <div class="search-box">
+            <input type="number" id="idMotorista1" placeholder="Digite seu ID">
+            <button onclick="buscarDados('plan')">Consultar Rota 🚛</button>
         </div>
+        <div id="resPlan"></div>
     </div>
 
-    <div id="aba-fech" class="hidden">
-        <div class="container">
-            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Fechamento de Ponto de Coleta</h2>
-            <div class="search-box">
-                <input type="number" id="idMotorista2" placeholder="Digite seu ID aqui">
-                <button onclick="buscarFechamentoSabado()">Consultar meu ID 🚛</button>
-            </div>
-            <div class="info-card">
-                <p>🟢 <strong>IMPORTANTE:</strong> Visite o ponto apenas no horário agendado para que nenhum pacote seja deixado para trás.</p>
-            </div>
-            <div id="resultadoFech"></div>
+    <div id="aba-fech" class="container hidden">
+        <div class="search-box">
+            <input type="number" id="idMotorista2" placeholder="Digite seu ID">
+            <button onclick="buscarDados('fech')">Consultar Horários 🏬</button>
         </div>
+        <div id="resFech"></div>
     </div>
 
 <script>
@@ -170,90 +65,62 @@
         document.getElementById('aba-fech').classList.toggle('hidden', tab !== 'fech');
         document.getElementById('btnPlan').classList.toggle('active', tab === 'plan');
         document.getElementById('btnFech').classList.toggle('active', tab === 'fech');
-        window.scrollTo(0,0);
     }
 
-    function parseCSV(text) {
-        const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-        const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
-        const headers = lines[0].split(regex).map(h => h.replace(/^"|"$/g, '').trim());
-        return lines.slice(1).map(line => {
-            const cols = line.split(regex).map(c => c.replace(/^"|"$/g, '').trim());
-            let obj = {};
-            headers.forEach((h, i) => obj[h] = cols[i] || "");
-            return obj;
-        });
-    }
-
-    async function buscarPlanejamento() {
-        const id = document.getElementById('idMotorista1').value.trim();
-        const resDiv = document.getElementById('resultadoPlan');
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226';
+    async function buscarDados(tipo) {
+        const id = document.getElementById(tipo === 'plan' ? 'idMotorista1' : 'idMotorista2').value.trim();
+        const resDiv = document.getElementById(tipo === 'plan' ? 'resPlan' : 'resFech');
+        
+        // URLs das abas da planilha
+        const urlPlan = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
+        const urlFech = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=1606207890";
         
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando sua rota...</div>";
-        
+        resDiv.innerHTML = "<div class='loader'>Carregando...</div>";
+
         try {
-            const resp = await fetch(url);
-            const data = parseCSV(await resp.text());
-            const filtrados = data.filter(row => row['ID do motorista'] === id);
-            
+            const response = await fetch(tipo === 'plan' ? urlPlan : urlFech);
+            const text = await response.text();
+            const rows = text.split('\n').map(r => r.split(','));
+            const headers = rows[0].map(h => h.replace(/"/g, '').trim());
+            const data = rows.slice(1).map(row => {
+                let obj = {};
+                headers.forEach((h, i) => obj[h] = row[i] ? row[i].replace(/"/g, '').trim() : "");
+                return obj;
+            });
+
+            const filtrados = data.filter(item => item["ID do motorista"] === id);
+
             if (filtrados.length === 0) {
-                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado.</div>";
+                resDiv.innerHTML = "❌ ID não encontrado.";
                 return;
             }
 
-            let html = '<div class="tabela-wrapper"><table class="tabela-plan"><thead><tr><th>SEQ</th><th>SHOP_NAME</th><th>ENDEREÇO</th></tr></thead><tbody>';
-            
-            filtrados.forEach(row => {
-                const end = row['ENDEREÇO'] + ', ' + row['NUMERO'] + ' - ' + row['BAIRRO'];
-                html += '<tr>' +
-                    '<td class="col-seq">' + (row['SEQUÊNCIA'] || '') + '</td>' +
-                    '<td class="col-loja">' + (row['SHOP_NAME'] || row['Nome da Loja']) + '</td>' +
-                    '<td>' + end + '</td>' +
-                '</tr>';
-            });
-            html += '</tbody></table></div>';
-            resDiv.innerHTML = html;
-        } catch (e) {
-            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar dados do Planejamento.</div>";
-        }
-    }
-
-    async function buscarFechamentoSabado() {
-        const id = document.getElementById('idMotorista2').value.trim();
-        const resDiv = document.getElementById('resultadoFech');
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv';
-        
-        if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando horários...</div>";
-        
-        try {
-            const resp = await fetch(url);
-            const data = parseCSV(await resp.text());
-            const filtrados = data.filter(row => row['ID do motorista'] === id);
-            
-            if (filtrados.length === 0) {
-                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado nos horários.</div>";
-                return;
+            if (tipo === 'plan') {
+                let html = '<div class="tabela-wrapper"><table><thead><tr><th>SEQ</th><th>LOJA</th><th>ENDEREÇO</th></tr></thead><tbody>';
+                filtrados.forEach(item => {
+                    const loja = item["SHOP_NAME"] || item["Nome da Loja"] || "N/A";
+                    const endereco = (item["ENDEREÇO"] || "") + ", " + (item["NUMERO"] || "") + " - " + (item["BAIRRO"] || "");
+                    html += '<tr><td class="seq">'+(item["SEQUÊNCIA"] || "")+'</td><td>'+loja+'</td><td>'+endereco+'</td></tr>';
+                });
+                html += '</tbody></table></div>';
+                resDiv.innerHTML = html;
+            } else {
+                let html = "";
+                filtrados.forEach(item => {
+                    html += '<div class="card">' +
+                        '<span class="field-label">Agência</span><span class="field-value">'+(item["Loja / Ponto de Coleta"] || "N/A")+'</span>' +
+                        '<div style="display:flex;gap:15px">' +
+                            '<div><span class="field-label">Visita</span><span class="field-value">'+(item["Horário de Visita Programado"] || "--:--")+'</span></div>' +
+                            '<div><span class="field-label">Fecha às</span><span class="field-value">'+(item["Horário de Funcionamento até"] || "--:--")+'</span></div>' +
+                        '</div>' +
+                        '<span class="field-label">Pacotes</span><span class="field-value">📦 '+(item["Pacotes Coletados"] || "0")+'</span>' +
+                    '</div>';
+                });
+                resDiv.innerHTML = html;
             }
-
-            let html = "";
-            filtrados.forEach(row => {
-                html += '<div class="card-entrega">' +
-                    '<div class="rota-badge">ROTA: ' + (row['ROTA'] || 'FECH') + '</div>' +
-                    '<span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">' + row['Loja / Ponto de Coleta'] + '</span>' +
-                    '<div style="display:flex; gap:10px;">' +
-                        '<div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">' + (row['Horário de Visita Programado'] || '---') + '</span></div>' +
-                        '<div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">' + (row['Horário de Funcionamento até'] || '---') + '</span></div>' +
-                    '</div>' +
-                    '<span class="field-label">ENDEREÇO</span><span class="field-value">' + row['Endereço Completo'] + '</span>' +
-                    '<div style="background:#fff5ed; color:var(--dark-orange); padding:15px; border-radius:10px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:20px;">📦 Pacotes: ' + (row['Pacotes Coletados'] || '---') + '</div>' +
-                '</div>';
-            });
-            resDiv.innerHTML = html;
-        } catch (e) {
-            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar horários.</div>";
+        } catch (err) {
+            resDiv.innerHTML = "⚠️ Erro de conexão com a planilha.";
         }
     }
 </script>
