@@ -24,12 +24,7 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        .container { 
-            padding: 15px; 
-            max-width: 600px; 
-            margin: auto; 
-            box-sizing: border-box; 
-        }
+        .container { padding: 15px; max-width: 600px; margin: auto; box-sizing: border-box; }
 
         /* BARRA DE NAVEGAÇÃO */
         .tab-bar { 
@@ -56,7 +51,7 @@
             border-bottom: 5px solid transparent;
             text-align: center;
             padding: 5px;
-            transition: 0.3s;
+            transition: background 0.3s;
         }
 
         .tab-item i { font-style: normal; font-size: 24px; margin-bottom: 2px; }
@@ -204,10 +199,9 @@
     </div>
 
 <script>
-    // Configurações Globais
-    const URL_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv";
-    const GID_PLAN = "465492226";
-    const GID_FECH = "1606207890";
+    // LINKS ATUALIZADOS (Convertidos para CSV para leitura do código)
+    const URL_PLAN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBIywxEqi7Hb5UHjqCAQBBZtVFs2ASYngPWDseAK8mrhm-8RyRJbxDLFGcSByeZ3dx6kyHiWrM007d/pub?gid=365061070&single=true&output=csv";
+    const URL_FECH = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBIywxEqi7Hb5UHjqCAQBBZtVFs2ASYngPWDseAK8mrhm-8RyRJbxDLFGcSByeZ3dx6kyHiWrM007d/pub?gid=1584689522&single=true&output=csv";
 
     function switchTab(tab) {
         document.getElementById('aba-plan').classList.toggle('hidden', tab !== 'plan');
@@ -220,6 +214,7 @@
     function parseCSV(text) {
         const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
         const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
+        if (lines.length === 0) return [];
         const headers = lines[0].split(regex).map(h => h.replace(/^"|"$/g, '').trim());
         
         return lines.slice(1).map(line => {
@@ -233,18 +228,17 @@
     async function buscarPlanejamento() {
         const id = document.getElementById('idMotorista1').value.trim();
         const resDiv = document.getElementById('resultadoPlan');
-        const url = `${URL_BASE}&gid=${GID_PLAN}`;
 
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando rota...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando sua rota...</div>";
 
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(URL_PLAN);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
 
             if (filtrados.length === 0) {
-                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado. Verifique com seu analista.</div>";
+                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado no planejamento. Verifique com seu analista.</div>";
                 return;
             }
 
@@ -263,20 +257,19 @@
             });
             resDiv.innerHTML = html;
         } catch (e) {
-            resDiv.innerHTML = "Erro ao carregar dados.";
+            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar dados do planejamento.</div>";
         }
     }
 
     async function buscarFechamentoSabado() {
         const id = document.getElementById('idMotorista2').value.trim();
         const resDiv = document.getElementById('resultadoFech');
-        const url = `${URL_BASE}&gid=${GID_FECH}&single=true`;
 
         if (!id) return;
         resDiv.innerHTML = "<div class='loader'>Buscando horários...</div>";
 
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(URL_FECH);
             const data = parseCSV(await resp.text());
             const filtrados = data.filter(row => row["ID do motorista"] === id);
 
@@ -287,7 +280,7 @@
 
             let html = "";
             filtrados.forEach(row => {
-                const endComp = row["Endereço Completo"];
+                const endComp = row["Endereço Completo"] || "";
                 html += `
                 <div class="card-entrega">
                     <div class="rota-badge">ROTA: ${row["ROTA"] || "FECH"}</div>
@@ -307,7 +300,7 @@
             });
             resDiv.innerHTML = html;
         } catch (e) {
-            resDiv.innerHTML = "Erro ao carregar dados.";
+            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar horários dos pontos.</div>";
         }
     }
 </script>
