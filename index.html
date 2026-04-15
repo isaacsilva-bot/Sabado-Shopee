@@ -171,20 +171,20 @@
     <nav class="tab-bar">
         <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
             <i>📅</i>
-            <span>PLANEJAMENTO DE COLETAS</span>
+            <span>PLANEJAMENTO DE COLETAS DO SÁBADO</span>
         </div>
         <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
             <i>🏬</i>
-            <span>HORÁRIO DE VISITA</span>
+            <span>HORÁRIO DE VISITA DE PONTOS DE COLETA (AGENCIA SHOPEE)</span>
         </div>
     </nav>
 
     <div id="aba-plan">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px;">Planejamento deste Sábado</h2>
+            <h2 style="text-align:center; font-size: 18px;">Planejamento de visitas a lojas e agencias Shopee</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista1" placeholder="Digite seu ID">
-                <button onclick="buscarPlanejamento()">Consultar Tabela 📊</button>
+                <button onclick="buscarPlanejamento()">CONSULTAR MINHA ROTA</button>
             </div>
             <div id="resultadoPlan"></div>
         </div>
@@ -192,7 +192,7 @@
 
     <div id="aba-fech" class="hidden">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px;">Agência Shopee</h2>
+            <h2 style="text-align:center; font-size: 18px;">Horários de Visita das Agências Shopee</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista2" placeholder="Digite seu ID">
                 <button onclick="buscarFechamentoSabado()">Consultar Horários 🚚</button>
@@ -200,7 +200,7 @@
 
             <div class="info-card">
                 <p style="margin:0; color:var(--green-text); font-size:14px; text-align:center; font-weight:800;">
-                    🟢 Visite o ponto no horário agendado para garantir sua performance.
+                    🟢 Visite no horário informado. Caso a visit seja realizada fora do horário o retorno será requisitado.
                 </p>
             </div>
 
@@ -308,7 +308,7 @@
                 </div>`;
             });
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao carregar dados."; }
+        } catch (e) { resDiv.innerHTML = "Talvez seu analista não tenha incluído em rota. Verifique com seu analista se você foi selecionado na escala."; }
     }
 </script>
 </body>
