@@ -24,8 +24,9 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        .container { padding: 15px; max-width: 800px; margin: auto; box-sizing: border-box; }
+        .container { padding: 15px; max-width: 900px; margin: auto; box-sizing: border-box; }
 
+        /* BARRA DE NAVEGAÇÃO */
         .tab-bar { 
             position: fixed; 
             top: 0; 
@@ -61,6 +62,7 @@
             border-bottom: 5px solid var(--orange);
         }
 
+        /* BUSCA */
         .search-box { 
             background: white; 
             padding: 20px; 
@@ -99,30 +101,30 @@
             overflow-x: auto;
             background: white;
             border-radius: 10px;
-            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .tabela-plan {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            min-width: 400px;
+            min-width: 600px;
         }
 
         .tabela-plan thead { background: #444; color: white; }
 
         .tabela-plan th, .tabela-plan td {
-            padding: 10px 5px;
+            padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
 
         .tabela-plan tr:nth-child(even) { background-color: #f9f9f9; }
 
-        .seq-col { font-weight: 900; color: var(--orange); text-align: center; width: 30px; }
+        .seq-col { font-weight: 900; color: var(--orange); text-align: center; width: 40px; }
         .shop-name { font-weight: 800; color: #000; }
 
-        /* CARDS DE FECHAMENTO */
+        /* CARDS FECHAMENTO */
         .card-entrega { 
             background: white; 
             padding: 20px; 
@@ -132,23 +134,9 @@
             border-left: 8px solid var(--orange); 
         }
 
-        .info-card {
-            background: var(--green-bg);
-            border-left: 8px solid var(--green-border);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0 25px 0;
-            text-align: center;
-        }
-
-        .info-card p { margin: 0; font-size: 14px; color: var(--green-text); font-weight: 800; }
-
-        .rota-badge { background: #222; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
         .field-label { font-size: 11px; color: var(--dark-orange); text-transform: uppercase; font-weight: 800; display: block; }
         .field-value { font-size: 16px; color: #000; font-weight: 700; margin-bottom: 10px; display: block; }
-        .ponto-nome { font-size: 18px; color: #000; font-weight: 900; }
-        .btn-gps-link { color: #0056b3; font-weight: 800; text-decoration: underline; display: flex; align-items: center; gap: 5px; margin-top: 10px; }
-
+        
         .hidden { display: none; }
         .loader { text-align: center; padding: 40px; font-weight: bold; }
     </style>
@@ -184,7 +172,6 @@
                 <input type="number" id="idMotorista2" placeholder="Digite seu ID">
                 <button onclick="buscarFechamentoSabado()">Consultar Horários 🏬</button>
             </div>
-            <div class="info-card"><p>🟢 Visite o ponto no horário agendado.</p></div>
             <div id="resultadoFech"></div>
         </div>
     </div>
@@ -215,7 +202,7 @@
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?output=csv&gid=465492226";
         
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+        resDiv.innerHTML = "<div class='loader'>Carregando dados...</div>";
         
         try {
             const resp = await fetch(url);
@@ -236,22 +223,19 @@
                                 <th>SEQ</th>
                                 <th>SHOP_NAME</th>
                                 <th>ENDEREÇO</th>
-                                <th>MAPA</th>
+                                <th>NÚMERO / OBS</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
             filtrados.forEach(row => {
-                const endereco = (row["ENDEREÇO"] || "") + ", " + (row["NUMERO"] || "") + " - " + (row["BAIRRO"] || "");
-                const linkMaps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(endereco);
-                
                 html += `
                     <tr>
-                        <td class="seq-col">${row["SEQUÊNCIA"] || row["Sequencia"] || ""}</td>
-                        <td class="shop-name">${row["SHOP_NAME"] || row["Nome da Loja"] || ""}</td>
-                        <td>${endereco}</td>
-                        <td style="text-align:center"><a href="${linkMaps}" target="_blank">📍</a></td>
+                        <td class="seq-col">${row["SEQUÊNCIA"] || ""}</td>
+                        <td class="shop-name">${row["SHOP_NAME"] || ""}</td>
+                        <td>${row["ENDEREÇO"] || ""}</td>
+                        <td>${row["NUMERO"] || ""} - ${row["BAIRRO"] || ""}</td>
                     </tr>
                 `;
             });
@@ -259,8 +243,7 @@
             html += `</tbody></table></div>`;
             resDiv.innerHTML = html;
         } catch (e) {
-            console.error(e);
-            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar dados. Verifique sua conexão.</div>";
+            resDiv.innerHTML = "<div class='card-entrega'>Erro ao carregar os dados do servidor.</div>";
         }
     }
 
@@ -270,7 +253,7 @@
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
         
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando...</div>";
+        resDiv.innerHTML = "<div class='loader'>Buscando horários...</div>";
         
         try {
             const resp = await fetch(url);
@@ -279,27 +262,22 @@
             const filtrados = data.filter(row => row["ID do motorista"] === id);
             
             if (filtrados.length === 0) {
-                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não localizado.</div>";
+                resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado.</div>";
                 return;
             }
             
             let html = "";
             filtrados.forEach(row => {
-                const endFech = row["Endereço Completo"] || "";
-                const linkMapsFech = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(endFech);
-                
                 html += `
                     <div class="card-entrega">
-                        <div class="rota-badge">ROTA: ${row["ROTA"] || "FECH"}</div>
                         <span class="field-label">PONTO / AGÊNCIA</span>
-                        <span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
+                        <span class="field-value">${row["Loja / Ponto de Coleta"] || ""}</span>
                         <div style="display:flex; gap:10px;">
                             <div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">${row["Horário de Visita Programado"] || "---"}</span></div>
                             <div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div>
                         </div>
                         <span class="field-label">ENDEREÇO</span>
-                        <span class="field-value" style="font-size:14px;">${endFech}</span>
-                        <a href="${linkMapsFech}" target="_blank" class="btn-gps-link">📍 ABRIR MAPAS</a>
+                        <span class="field-value" style="font-size:14px;">${row["Endereço Completo"] || ""}</span>
                     </div>`;
             });
             resDiv.innerHTML = html;
