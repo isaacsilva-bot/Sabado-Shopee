@@ -135,11 +135,11 @@
         .ponto-nome { font-size: 22px; color: #000; font-weight: 900; }
         .btn-gps-link { color: #0056b3; font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 5px; margin-top: 10px; text-decoration: underline; }
 
-        /* ESTILO TABELA (APENAS PLANEJAMENTO) */
-        .tabela-wrapper { overflow-x: auto; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .tabela-plan { width: 100%; border-collapse: collapse; font-size: 13px; }
+        /* ESTILO TABELA PLANEJAMENTO (VISÃO PLANILHA) */
+        .tabela-wrapper { overflow-x: auto; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 10px; }
+        .tabela-plan { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
         .tabela-plan thead { background: #444; color: white; }
-        .tabela-plan th, .tabela-plan td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #eee; }
+        .tabela-plan th, .tabela-plan td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; }
         .tabela-plan tr:nth-child(even) { background-color: #f9f9f9; }
         .col-seq { font-weight: 900; color: var(--orange); text-align: center; }
         .col-loja { font-weight: 800; color: #000; }
@@ -162,7 +162,8 @@
     </nav>
 
     <div id="aba-plan">
-        <div class="container" style="max-width: 800px;"> <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Planejamento deste Sábado</h2>
+        <div class="container" style="max-width: 800px;">
+            <h2 style="text-align:center; font-size: 18px; margin-top: 0;">Planejamento deste Sábado</h2>
             <div class="search-box">
                 <input type="number" id="idMotorista1" placeholder="Digite seu ID aqui">
                 <button onclick="buscarPlanejamento()">Consultar meu ID 🚛</button>
@@ -216,41 +217,34 @@
         resDiv.innerHTML = "<div class='loader'>Buscando por sua rota. Aguarde...</div>";
         try {
             const resp = await fetch(url);
-            const data = parseCSV(await resp.text());
+            const csvText = await resp.text();
+            const data = parseCSV(csvText);
             const filtrados = data.filter(row => row["ID do motorista"] === id);
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ Não encontrei seu ID aqui. Reveja seu ID e tente novamente ou solicite ajuda para o seu analista.</div>"; return; }
             
-            // CONSTRUÇÃO DA TABELA (Visão de Planilha)
-            let html = `
-                <div class="tabela-wrapper">
-                    <table class="tabela-plan">
-                        <thead>
-                            <tr>
-                                <th>SEQ</th>
-                                <th>SHOP_NAME</th>
-                                <th>ENDEREÇO</th>
-                                <th>MAPA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
+            if (filtrados.length === 0) { 
+                resDiv.innerHTML = "<div class='card-entrega'>❌ Não encontrei seu ID aqui. Reveja seu ID e tente novamente ou solicite ajuda para o seu analista.</div>"; 
+                return; 
+            }
+
+            let html = '<div class="tabela-wrapper"><table class="tabela-plan"><thead><tr><th>SEQ</th><th>SHOP_NAME</th><th>ENDEREÇO</th><th>MAPA</th></tr></thead><tbody>';
+
             filtrados.forEach(row => {
-                const end = `${row["ENDEREÇO"]}, ${row["NUMERO"]} - ${row["BAIRRO"]}`;
+                const end = row["ENDEREÇO"] + ", " + row["NUMERO"] + " - " + row["BAIRRO"];
                 const linkMaps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(end);
-                html += `
-                    <tr>
-                        <td class="col-seq">${row["SEQUÊNCIA"] || ""}</td>
-                        <td class="col-loja">${row["SHOP_NAME"] || row["Nome da Loja"]}</td>
-                        <td>${end}</td>
-                        <td style="text-align:center"><a href="${linkMaps}" target="_blank" style="text-decoration:none; font-size:18px;">📍</a></td>
-                    </tr>
-                `;
+                
+                html += '<tr>' +
+                    '<td class="col-seq">' + (row["SEQUÊNCIA"] || "") + '</td>' +
+                    '<td class="col-loja">' + (row["SHOP_NAME"] || row["Nome da Loja"]) + '</td>' +
+                    '<td>' + end + '</td>' +
+                    '<td style="text-align:center"><a href="' + linkMaps + '" target="_blank" style="text-decoration:none; font-size:18px;">📍</a></td>' +
+                '</tr>';
             });
-            
-            html += `</tbody></table></div>`;
+
+            html += '</tbody></table></div>';
             resDiv.innerHTML = html;
-        } catch (e) { resDiv.innerHTML = "Erro ao carregar dados."; }
+        } catch (e) { 
+            resDiv.innerHTML = "Erro ao carregar dados."; 
+        }
     }
 
     async function buscarFechamentoSabado() {
@@ -266,6 +260,7 @@
             if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ Não localizei seu ID. Talvez você não tenha agencia Shopee em sua rota. Verifique com o seu analista, por favor..</div>"; return; }
             let html = "";
             filtrados.forEach(row => {
+                const linkMapsFech = "https://www.google.com/maps/search/?api=1&query=$" + encodeURIComponent(row["Endereço Completo"]);
                 html += `<div class="card-entrega">
                     <div class="rota-badge">ROTA: ${row["ROTA"] || "FECH"}</div>
                     <span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">${row["Loja / Ponto de Coleta"]}</span>
@@ -274,7 +269,7 @@
                         <div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div>
                     </div>
                     <span class="field-label">ENDEREÇO</span><span class="field-value">${row["Endereço Completo"]}</span>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row["Endereço Completo"])}" target="_blank" class="btn-gps-link">📍 ABRIR NO GOOGLE MAPS</a>
+                    <a href="${linkMapsFech}" target="_blank" class="btn-gps-link">📍 ABRIR NO GOOGLE MAPS</a>
                     <div style="background:#fff5ed; color:var(--dark-orange); padding:15px; border-radius:10px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:20px;">📦 Pacotes: ${row["Pacotes Coletados"] || "---"}</div>
                 </div>`;
             });
