@@ -304,7 +304,7 @@
                         <div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">${row["Horário de Funcionamento até"] || "---"}</span></div>
                     </div>
                     <span class="field-label">ENDEREÇO</span><span class="field-value" style="font-size:13px;">${row["Endereço Completo"]}</span>
-                    <div style="background:#fff5ed; color:var(--dark-orange); padding:10px; border-radius:8px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:16px;">📦 Pacotes: ${row["Pacotes Coletados"] || "---"}</div>
+                    <div style="background:#fff5ed; color:var(--dark-orange); padding:10px; border-radius:8px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:16px;">📦 Pacotes disponíveis: ${row["Pacotes disponíveis agora"] || "---"}</div>
                 </div>`;
             });
             resDiv.innerHTML = html;
