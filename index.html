@@ -4,380 +4,359 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🚚 Planejamento de Coletas Shopee Sábado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --orange: #ff6a00;
-            --dark-orange: #d45600;
-            --bg: #f5f7fa;
+            --orange: #EE4D2D;
+            --orange-hover: #D73211;
+            --orange-light: #FF6633;
+            --bg: #f0f2f5;
             --text: #1a1a1a;
             --green-bg: #d4edda;
             --green-border: #28a745;
             --green-text: #155724;
-            --table-border: #dee2e6;
+            --table-border: #e8eaed;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
+            font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
-            padding-top: 90px;
+            padding-top: 70px;
             color: var(--text);
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
         }
-
-        .container { padding: 15px; max-width: 800px; margin: auto; box-sizing: border-box; }
-
+        .container { padding: 16px; max-width: 680px; margin: auto; }
         .tab-bar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: white;
-            display: flex;
-            height: 80px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            z-index: 1000;
+            position: fixed; top: 0; width: 100%; background: #fff;
+            display: flex; height: 64px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.1); z-index: 1000;
         }
-
         .tab-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: #555;
-            cursor: pointer;
-            font-weight: 800;
-            border-bottom: 5px solid transparent;
-            text-align: center;
-            padding: 5px;
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            gap: 8px; font-size: 12px; color: #888; cursor: pointer;
+            font-weight: 700; border-bottom: 3px solid transparent;
+            text-align: center; padding: 8px 12px;
+            transition: all 0.25s ease; letter-spacing: 0.3px;
         }
-
-        .tab-item i { font-style: normal; font-size: 20px; margin-bottom: 2px; }
-
+        .tab-item:hover { background: #fef5f2; color: var(--orange); }
+        .tab-item .tab-icon { width: 22px; height: 22px; flex-shrink: 0; }
         .tab-item.active {
-            background: #fff3eb;
-            color: var(--orange);
-            border-bottom: 5px solid var(--orange);
+            background: linear-gradient(180deg, #fff5f0 0%, #fff 100%);
+            color: var(--orange); border-bottom: 3px solid var(--orange);
         }
-
+        .tab-item .tab-label { line-height: 1.2; }
+        .hero {
+            background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+            border-radius: 20px; padding: 28px 24px 22px;
+            margin-bottom: 16px; text-align: center;
+            position: relative; overflow: hidden;
+            box-shadow: 0 8px 30px rgba(238,77,45,0.25);
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -40px; right: -40px;
+            width: 120px; height: 120px;
+            background: rgba(255,255,255,0.1); border-radius: 50%;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: -30px; left: -30px;
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.08); border-radius: 50%;
+        }
+        .hero-logo {
+            width: 48px; height: 48px; background: #fff; border-radius: 14px;
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .hero-logo svg { width: 28px; height: 28px; }
+        .hero h1 {
+            color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 4px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.1); position: relative;
+        }
+        .hero p {
+            color: rgba(255,255,255,0.88); font-size: 12px;
+            font-weight: 500; position: relative;
+        }
         .search-box {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
+            background: #fff; padding: 20px; border-radius: 18px;
+            box-shadow: var(--card-shadow); margin-bottom: 16px;
+            border: 1px solid rgba(0,0,0,0.04);
         }
-
-        input {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid #ccc;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            font-size: 18px;
-            font-weight: bold;
+        .input-wrapper { position: relative; margin-bottom: 12px; }
+        .input-wrapper .input-icon {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%); width: 20px; height: 20px; color: #bbb;
         }
-
-        button {
-            width: 100%;
-            padding: 18px;
-            background: var(--orange);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 18px;
-            cursor: pointer;
-            text-transform: uppercase;
+        input[type="number"] {
+            width: 100%; padding: 15px 16px 15px 44px; border-radius: 14px;
+            border: 2px solid #e8eaed; font-size: 16px;
+            font-family: 'Inter', sans-serif; font-weight: 600; color: #333;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+            -moz-appearance: textfield;
         }
-
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="number"]:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(238,77,45,0.1);
+        }
+        input[type="number"]::placeholder { color: #bbb; font-weight: 500; }
+        .btn-primary {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+            color: white; border: none; border-radius: 14px;
+            font-weight: 800; font-size: 15px; font-family: 'Inter', sans-serif;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(238,77,45,0.3);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(238,77,45,0.4); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary svg { width: 18px; height: 18px; }
         .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 100%; overflow-x: auto; background: #fff;
+            border-radius: 16px; box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.04);
         }
-
-        .excel-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 500px;
-        }
-
+        .excel-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
         .excel-table th {
-            background: #f8f9fa;
-            border: 1px solid var(--table-border);
-            padding: 12px 8px;
-            text-align: left;
-            color: #666;
-            font-weight: bold;
+            background: #fafbfc; border-bottom: 2px solid var(--table-border);
+            padding: 14px 12px; text-align: left; color: #666;
+            font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-
-        .excel-table td {
-            border: 1px solid var(--table-border);
-            padding: 10px 8px;
-            vertical-align: middle;
-        }
-
-        .excel-table tr:nth-child(even) { background: #fcfcfc; }
-
+        .excel-table td { border-bottom: 1px solid #f2f3f5; padding: 12px; vertical-align: middle; }
+        .excel-table tr:last-child td { border-bottom: none; }
+        .excel-table tr:hover td { background: #fef9f7; }
         .btn-mini-map {
-            background: #e7f1ff;
-            color: #007bff;
-            text-decoration: none;
-            padding: 5px 8px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 11px;
-            display: inline-block;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0; text-decoration: none; padding: 6px 12px;
+            border-radius: 8px; font-weight: 700; font-size: 11px;
+            display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;
         }
-
+        .btn-mini-map:hover { background: #bbdefb; transform: translateY(-1px); }
         .card-entrega {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 18px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-            border-left: 8px solid var(--orange);
+            background: #fff; padding: 20px; margin-bottom: 14px;
+            border-radius: 18px; box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.04); border-left: 5px solid var(--orange);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: slideUp 0.35s ease-out both;
         }
-
-        .rota-badge { background: #222; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
-        .field-label { font-size: 11px; color: var(--dark-orange); text-transform: uppercase; font-weight: 800; display: block; }
-        .field-value { font-size: 16px; color: #000; font-weight: 700; margin-bottom: 10px; display: block; }
-        .ponto-nome { font-size: 18px; color: #000; font-weight: 900; }
-
+        .card-entrega:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .card-entrega:nth-child(1) { animation-delay: 0s; }
+        .card-entrega:nth-child(2) { animation-delay: 0.06s; }
+        .card-entrega:nth-child(3) { animation-delay: 0.12s; }
+        .card-entrega:nth-child(4) { animation-delay: 0.18s; }
+        .card-entrega:nth-child(5) { animation-delay: 0.24s; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .rota-badge {
+            background: linear-gradient(135deg, #222 0%, #444 100%);
+            color: white; padding: 5px 12px; border-radius: 8px;
+            font-size: 11px; font-weight: 800; display: inline-block;
+            margin-bottom: 14px; letter-spacing: 0.5px;
+        }
+        .field-label {
+            font-size: 10px; color: var(--orange); text-transform: uppercase;
+            font-weight: 800; display: block; letter-spacing: 0.8px; margin-bottom: 2px;
+        }
+        .field-value {
+            font-size: 15px; color: #222; font-weight: 700;
+            margin-bottom: 12px; display: block; line-height: 1.3;
+        }
+        .ponto-nome { font-size: 16px; color: #111; font-weight: 900; }
+        .pacotes-box {
+            background: linear-gradient(135deg, #fff5ed 0%, #ffe8d6 100%);
+            color: var(--orange-hover); padding: 12px; border-radius: 12px;
+            text-align: center; font-weight: 900;
+            border: 2px dashed rgba(238,77,45,0.3); margin-top: 12px; font-size: 15px;
+        }
         .info-card {
-            background: var(--green-bg);
-            border-left: 8px solid var(--green-border);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid var(--green-border);
+            padding: 14px 16px; border-radius: 14px; margin-bottom: 16px;
         }
-
+        .info-card p { color: var(--green-text); font-size: 13px; font-weight: 700; text-align: center; line-height: 1.4; }
         .hidden { display: none; }
-        .loader { text-align: center; padding: 40px; color: #222; font-weight: bold; }
-
+        .loader {
+            text-align: center; padding: 50px 20px;
+            color: var(--orange); font-weight: 700; font-size: 14px;
+        }
+        .loader::before {
+            content: ''; display: block; width: 36px; height: 36px;
+            border: 3px solid #f0f0f0; border-top-color: var(--orange);
+            border-radius: 50%; margin: 0 auto 12px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .notif-banner {
-            background: linear-gradient(135deg, #fff3eb 0%, #ffe8d6 100%);
-            border: 2px solid var(--orange);
-            border-radius: 14px;
-            padding: 14px 16px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 3px 12px rgba(255,106,0,0.15);
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8d6 100%);
+            border: 2px solid rgba(238,77,45,0.25); border-radius: 16px;
+            padding: 14px 16px; margin-bottom: 14px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 2px 12px rgba(238,77,45,0.08);
         }
-        .notif-banner .notif-icon { font-size: 28px; flex-shrink: 0; }
+        .notif-banner .notif-icon { font-size: 24px; flex-shrink: 0; }
         .notif-banner .notif-text { flex: 1; }
-        .notif-banner .notif-text strong { display: block; font-size: 13px; color: var(--dark-orange); margin-bottom: 2px; }
-        .notif-banner .notif-text span { font-size: 12px; color: #555; }
+        .notif-banner .notif-text strong { display: block; font-size: 13px; color: var(--orange-hover); margin-bottom: 2px; }
+        .notif-banner .notif-text span { font-size: 11px; color: #777; line-height: 1.3; }
         .notif-btn {
-            background: var(--orange);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            width: auto;
-            text-transform: none;
+            background: var(--orange); color: white; border: none;
+            padding: 9px 16px; border-radius: 10px; font-weight: 800;
+            font-size: 11px; font-family: 'Inter', sans-serif;
+            cursor: pointer; white-space: nowrap; width: auto;
+            text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;
         }
+        .notif-btn:hover { background: var(--orange-hover); transform: translateY(-1px); }
         .notif-btn.active { background: var(--green-border); }
-        .notif-btn:disabled { background: #aaa; cursor: default; }
-
+        .notif-btn:disabled { background: #aaa; cursor: default; transform: none; }
         .saved-id-bar {
-            background: #e8f5e9;
-            border: 1px solid #a5d6a7;
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 13px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 1px solid #a5d6a7; border-radius: 12px;
+            padding: 10px 14px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between; font-size: 13px;
         }
         .saved-id-bar .id-info { color: var(--green-text); font-weight: 700; }
         .saved-id-bar .btn-clear {
-            background: none;
-            border: 1px solid #c62828;
-            color: #c62828;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            width: auto;
-            text-transform: none;
+            background: #fff; border: 1px solid #e57373; color: #c62828;
+            padding: 5px 12px; border-radius: 8px; font-size: 11px;
+            font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer; width: auto; text-transform: none; transition: all 0.2s;
         }
-
+        .saved-id-bar .btn-clear:hover { background: #ffebee; }
         .alert-scheduled {
-            background: #fff8e1;
-            border: 1px dashed #ffa000;
-            color: #e65100;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-top: 10px;
-            text-align: center;
+            background: #fff8e1; border: 1px dashed #ffa000; color: #e65100;
+            padding: 8px 12px; border-radius: 10px; font-size: 12px;
+            font-weight: 700; margin-top: 12px; text-align: center;
         }
         .alert-scheduled.past { background: #fce4ec; border-color: #e57373; color: #b71c1c; }
         .alert-scheduled.done { background: #e8f5e9; border-color: #81c784; color: #2e7d32; }
+        .footer { text-align: center; padding: 24px 16px 32px; color: #aaa; font-size: 11px; font-weight: 600; }
+        .footer span { color: var(--orange); }
+        @media (max-width: 480px) {
+            .tab-item { font-size: 10px; gap: 4px; padding: 8px 6px; }
+            .tab-item .tab-icon { width: 18px; height: 18px; }
+            .hero { padding: 22px 18px 18px; }
+            .hero h1 { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
-
     <nav class="tab-bar">
         <div class="tab-item active" id="btnPlan" onclick="switchTab('plan')">
-            <i>📅</i>
-            <span>PLANEJAMENTO DE COLETAS DO SÁBADO</span>
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            <span class="tab-label">PLANEJAMENTO<br>DO SÁBADO</span>
         </div>
         <div class="tab-item" id="btnFech" onclick="switchTab('fech')">
-            <i>🏬</i>
-            <span>HORÁRIO DE VISITA DE PONTOS DE COLETA (AGENCIA SHOPEE)</span>
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span class="tab-label">HORÁRIOS<br>DAS AGÊNCIAS</span>
         </div>
     </nav>
-
     <div id="aba-plan">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px;">Planejamento de visitas a lojas e agencias Shopee</h2>
+            <div class="hero">
+                <div class="hero-logo"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 4.5 5 7.5c0 5 7 14.5 7 14.5s7-9.5 7-14.5C19 4.5 16 2 12 2z" fill="#EE4D2D"/><circle cx="12" cy="7.5" r="2.5" fill="#fff"/></svg></div>
+                <h1>Planejamento de Coletas</h1>
+                <p>Consulte sua rota de sábado</p>
+            </div>
             <div id="savedIdBarPlan"></div>
             <div class="search-box">
-                <input type="number" id="idMotorista1" placeholder="Digite seu ID">
-                <button onclick="buscarPlanejamento()">CONSULTAR MINHA ROTA</button>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input type="number" id="idMotorista1" placeholder="Digite seu ID de motorista">
+                </div>
+                <button class="btn-primary" onclick="buscarPlanejamento()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    CONSULTAR MINHA ROTA
+                </button>
             </div>
             <div id="resultadoPlan"></div>
+            <div class="footer">SPX Express — <span>Shopee</span> Regional RJ</div>
         </div>
     </div>
-
     <div id="aba-fech" class="hidden">
         <div class="container">
-            <h2 style="text-align:center; font-size: 18px;">Horários de Visita das Agências Shopee</h2>
+            <div class="hero">
+                <div class="hero-logo"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#EE4D2D" stroke-width="2.5"/><path d="M12 6v6l4 2" stroke="#EE4D2D" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+                <h1>Horários das Agências</h1>
+                <p>Visitas e fechamentos programados</p>
+            </div>
             <div id="savedIdBarFech"></div>
             <div id="notifBannerArea"></div>
             <div class="search-box">
-                <input type="number" id="idMotorista2" placeholder="Digite seu ID">
-                <button onclick="buscarFechamentoSabado()">Consultar Horários 🚚</button>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input type="number" id="idMotorista2" placeholder="Digite seu ID de motorista">
+                </div>
+                <button class="btn-primary" onclick="buscarFechamentoSabado()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    CONSULTAR HORÁRIOS
+                </button>
             </div>
-            <div class="info-card">
-                <p style="margin:0; color:var(--green-text); font-size:14px; text-align:center; font-weight:800;">
-                    🟢 Visite no horário agendado. Em caso de empate de horários, priorize o ponto com mais pacotes.
-                </p>
-            </div>
+            <div class="info-card"><p>🟢 Visite no horário agendado. Em caso de empate, priorize o ponto com mais pacotes.</p></div>
             <div id="resultadoFech"></div>
+            <div class="footer">SPX Express — <span>Shopee</span> Regional RJ</div>
         </div>
     </div>
-
 <script>
     var NOTIF_ADVANCE_MIN = 30;
     var scheduledTimers = [];
     var notifPermission = ('Notification' in window) ? Notification.permission : 'default';
-
-    function saveDriverId(id) {
-        localStorage.setItem('shopee_driver_id', id);
-        localStorage.setItem('shopee_driver_saved_at', new Date().toISOString());
-    }
+    function saveDriverId(id) { localStorage.setItem('shopee_driver_id', id); localStorage.setItem('shopee_driver_saved_at', new Date().toISOString()); }
     function getSavedDriverId() { return localStorage.getItem('shopee_driver_id') || ''; }
     function isNotifEnabled() { return localStorage.getItem('shopee_notif_enabled') === 'true'; }
-
     function clearSavedId() {
-        localStorage.removeItem('shopee_driver_id');
-        localStorage.removeItem('shopee_driver_saved_at');
-        localStorage.removeItem('shopee_notif_enabled');
-        clearAllTimers();
-        renderSavedIdBars();
-        renderNotifBanner();
-        document.getElementById('idMotorista1').value = '';
-        document.getElementById('idMotorista2').value = '';
-        document.getElementById('resultadoPlan').innerHTML = '';
-        document.getElementById('resultadoFech').innerHTML = '';
+        localStorage.removeItem('shopee_driver_id'); localStorage.removeItem('shopee_driver_saved_at'); localStorage.removeItem('shopee_notif_enabled');
+        clearAllTimers(); renderSavedIdBars(); renderNotifBanner();
+        document.getElementById('idMotorista1').value = ''; document.getElementById('idMotorista2').value = '';
+        document.getElementById('resultadoPlan').innerHTML = ''; document.getElementById('resultadoFech').innerHTML = '';
     }
-
     function renderSavedIdBars() {
         var id = getSavedDriverId();
         var html = id ? '<div class="saved-id-bar"><span class="id-info">✅ ID salvo: <strong>' + id + '</strong> — alertas ativos</span><button class="btn-clear" onclick="clearSavedId()">Limpar</button></div>' : '';
         document.getElementById('savedIdBarPlan').innerHTML = html;
         document.getElementById('savedIdBarFech').innerHTML = html;
     }
-
     function renderNotifBanner() {
         var area = document.getElementById('notifBannerArea');
         var id = getSavedDriverId();
         if (!id) { area.innerHTML = ''; return; }
-        if (!('Notification' in window)) {
-            area.innerHTML = '<div class="notif-banner"><div class="notif-icon">⚠️</div><div class="notif-text"><strong>Navegador não suporta notificações</strong><span>Use o Chrome ou Firefox.</span></div></div>';
-            return;
-        }
+        if (!('Notification' in window)) { area.innerHTML = '<div class="notif-banner"><div class="notif-icon">⚠️</div><div class="notif-text"><strong>Navegador não suporta notificações</strong><span>Use Chrome ou Firefox.</span></div></div>'; return; }
         notifPermission = Notification.permission;
-        if (notifPermission === 'granted' && isNotifEnabled()) {
-            area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔔</div><div class="notif-text"><strong>Notificações ativadas</strong><span>Alertas 30 min antes. Mantenha a aba aberta.</span></div><button class="notif-btn active" disabled>ATIVADO ✓</button></div>';
-        } else if (notifPermission === 'denied') {
-            area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔕</div><div class="notif-text"><strong>Notificações bloqueadas</strong><span>Permita nas configurações do navegador.</span></div></div>';
-        } else {
-            area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔔</div><div class="notif-text"><strong>Ativar alertas de visita</strong><span>Receba aviso 30 min antes.</span></div><button class="notif-btn" onclick="requestNotifPermission()">ATIVAR</button></div>';
-        }
+        if (notifPermission === 'granted' && isNotifEnabled()) { area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔔</div><div class="notif-text"><strong>Notificações ativadas</strong><span>Alertas 30 min antes. Mantenha a aba aberta.</span></div><button class="notif-btn active" disabled>ATIVADO ✓</button></div>'; }
+        else if (notifPermission === 'denied') { area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔕</div><div class="notif-text"><strong>Notificações bloqueadas</strong><span>Permita nas configurações do navegador.</span></div></div>'; }
+        else { area.innerHTML = '<div class="notif-banner"><div class="notif-icon">🔔</div><div class="notif-text"><strong>Ativar alertas de visita</strong><span>Receba aviso 30 min antes.</span></div><button class="notif-btn" onclick="requestNotifPermission()">ATIVAR</button></div>'; }
     }
-
     function requestNotifPermission() {
         if (!('Notification' in window)) return;
         Notification.requestPermission().then(function(result) {
             notifPermission = result;
-            if (result === 'granted') {
-                localStorage.setItem('shopee_notif_enabled', 'true');
-                new Notification('🚚 Shopee SPX - Alertas Ativados!', { body: 'Alertas 30 min antes de cada visita.', icon: 'logo.png' });
-                var id = getSavedDriverId();
-                if (id) scheduleNotificationsForId(id);
-            }
+            if (result === 'granted') { localStorage.setItem('shopee_notif_enabled', 'true'); new Notification('🚚 Shopee SPX - Alertas Ativados!', { body: 'Alertas 30 min antes.', icon: 'logo.png' }); var id = getSavedDriverId(); if (id) scheduleNotificationsForId(id); }
             renderNotifBanner();
         });
     }
-
-    function clearAllTimers() {
-        scheduledTimers.forEach(function(t) { clearTimeout(t); });
-        scheduledTimers = [];
-    }
-
+    function clearAllTimers() { scheduledTimers.forEach(function(t) { clearTimeout(t); }); scheduledTimers = []; }
     function scheduleNotificationsForId(id) {
-        clearAllTimers();
-        if (!isNotifEnabled() || notifPermission !== 'granted') return;
+        clearAllTimers(); if (!isNotifEnabled() || notifPermission !== 'granted') return;
         var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
-        fetch(url).then(function(resp) { return resp.text(); }).then(function(text) {
-            var data = parseCSV(text);
-            var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
-            var now = new Date();
+        fetch(url).then(function(r) { return r.text(); }).then(function(text) {
+            var data = parseCSV(text); var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; }); var now = new Date();
             filtrados.forEach(function(row) {
-                var horario = row["Horário de Visita Programado"];
-                if (!horario) return;
-                var match = horario.match(/(\d{1,2}):(\d{2})/);
-                if (!match) return;
-                var visitDate = new Date();
-                visitDate.setHours(parseInt(match[1]), parseInt(match[2]), 0, 0);
-                var alertDate = new Date(visitDate.getTime() - NOTIF_ADVANCE_MIN * 60 * 1000);
-                var delay = alertDate.getTime() - now.getTime();
-                var ponto = row["Loja / Ponto de Coleta"] || "Ponto de Coleta";
-                var endereco = row["Endereço Completo"] || "";
-                if (delay > 0) {
-                    scheduledTimers.push(setTimeout(function() {
-                        new Notification('🚚 Visita em 30 min — ' + horario, { body: ponto + '\n📍 ' + endereco, icon: 'logo.png', tag: 'visita-' + horario, requireInteraction: true });
-                    }, delay));
-                }
-                var delayExact = visitDate.getTime() - now.getTime();
-                if (delayExact > 0) {
-                    scheduledTimers.push(setTimeout(function() {
-                        new Notification('⏰ AGORA — Visita: ' + horario, { body: ponto + '\n📍 ' + endereco + '\nÉ hora de visitar!', icon: 'logo.png', tag: 'agora-' + horario, requireInteraction: true });
-                    }, delayExact));
-                }
+                var horario = row["Horário de Visita Programado"]; if (!horario) return;
+                var match = horario.match(/(\d{1,2}):(\d{2})/); if (!match) return;
+                var vd = new Date(); vd.setHours(parseInt(match[1]), parseInt(match[2]), 0, 0);
+                var ad = new Date(vd.getTime() - NOTIF_ADVANCE_MIN * 60 * 1000);
+                var delay = ad.getTime() - now.getTime();
+                var ponto = row["Loja / Ponto de Coleta"] || "Ponto"; var endereco = row["Endereço Completo"] || "";
+                if (delay > 0) { scheduledTimers.push(setTimeout(function() { new Notification('🚚 Visita em 30 min — ' + horario, { body: ponto + '\n📍 ' + endereco, icon: 'logo.png', tag: 'v-' + horario, requireInteraction: true }); }, delay)); }
+                var de = vd.getTime() - now.getTime();
+                if (de > 0) { scheduledTimers.push(setTimeout(function() { new Notification('⏰ AGORA — ' + horario, { body: ponto + '\n📍 ' + endereco, icon: 'logo.png', tag: 'a-' + horario, requireInteraction: true }); }, de)); }
             });
         });
     }
-
     function switchTab(tab) {
         document.getElementById('aba-plan').classList.toggle('hidden', tab !== 'plan');
         document.getElementById('aba-fech').classList.toggle('hidden', tab !== 'fech');
@@ -385,89 +364,63 @@
         document.getElementById('btnFech').classList.toggle('active', tab === 'fech');
         window.scrollTo(0,0);
     }
-
     function parseCSV(text) {
         var lines = text.split(/\r?\n/).filter(function(l) { return l.trim() !== ""; });
         var regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
         var headers = lines[0].split(regex).map(function(h) { return h.replace(/^"|"$/g, '').trim(); });
         return lines.slice(1).map(function(line) {
             var cols = line.split(regex).map(function(c) { return c.replace(/^"|"$/g, '').trim(); });
-            var obj = {};
-            headers.forEach(function(h, i) { obj[h] = cols[i] || ""; });
-            return obj;
+            var obj = {}; headers.forEach(function(h, i) { obj[h] = cols[i] || ""; }); return obj;
         });
     }
-
     function buscarPlanejamento() {
         var id = document.getElementById('idMotorista1').value.trim();
         var resDiv = document.getElementById('resultadoPlan');
         var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=465492226&single=true&output=csv";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Analisando sua rota. Aguarde...</div>";
-        saveDriverId(id);
-        document.getElementById('idMotorista2').value = id;
-        renderSavedIdBars();
-        renderNotifBanner();
+        resDiv.innerHTML = "<div class='loader'>Analisando sua rota...</div>";
+        saveDriverId(id); document.getElementById('idMotorista2').value = id; renderSavedIdBars(); renderNotifBanner();
         fetch(url).then(function(r) { return r.text(); }).then(function(text) {
-            var data = parseCSV(text);
-            var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ ID não encontrado.</div>"; return; }
+            var data = parseCSV(text); var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>❌ ID não encontrado.</div>"; return; }
             var html = '<div class="table-responsive"><table class="excel-table"><thead><tr><th>ROTA</th><th>LOJA / PONTO</th><th>ENDEREÇO</th><th>GPS</th></tr></thead><tbody>';
             filtrados.forEach(function(row) {
-                var end = (row["ENDEREÇO"] || '') + ', ' + (row["NUMERO"] || '') + ' - ' + (row["BAIRRO"] || '');
-                html += '<tr><td><strong>' + (row["ROTA"] || "SAB") + '</strong></td><td>' + (row["Nome da Loja"] || '') + '</td><td>' + end + '</td><td><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end) + '" target="_blank" class="btn-mini-map">ABRIR</a></td></tr>';
+                var end = (row["ENDEREÇO"]||'') + ', ' + (row["NUMERO"]||'') + ' - ' + (row["BAIRRO"]||'');
+                html += '<tr><td><strong>' + (row["ROTA"]||"SAB") + '</strong></td><td>' + (row["Nome da Loja"]||'') + '</td><td style="font-size:12px;">' + end + '</td><td><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end) + '" target="_blank" class="btn-mini-map">📍 ABRIR</a></td></tr>';
             });
-            html += '</tbody></table></div>';
-            resDiv.innerHTML = html;
-        }).catch(function() { resDiv.innerHTML = "Erro ao conectar com a planilha."; });
+            html += '</tbody></table></div>'; resDiv.innerHTML = html;
+        }).catch(function() { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>Erro ao conectar.</div>"; });
     }
-
     function buscarFechamentoSabado() {
         var id = document.getElementById('idMotorista2').value.trim();
         var resDiv = document.getElementById('resultadoFech');
         var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=1606207890&single=true&output=csv";
         if (!id) return;
-        resDiv.innerHTML = "<div class='loader'>Buscando seus horários...</div>";
-        saveDriverId(id);
-        document.getElementById('idMotorista1').value = id;
-        renderSavedIdBars();
-        renderNotifBanner();
+        resDiv.innerHTML = "<div class='loader'>Buscando horários...</div>";
+        saveDriverId(id); document.getElementById('idMotorista1').value = id; renderSavedIdBars(); renderNotifBanner();
         fetch(url).then(function(r) { return r.text(); }).then(function(text) {
-            var data = parseCSV(text);
-            var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega'>❌ Sem agências para este ID.</div>"; return; }
-            var now = new Date();
-            var html = "";
+            var data = parseCSV(text); var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>❌ Sem agências para este ID.</div>"; return; }
+            var now = new Date(); var html = "";
             filtrados.forEach(function(row) {
-                var horario = row["Horário de Visita Programado"] || "---";
-                var alertHtml = "";
+                var horario = row["Horário de Visita Programado"] || "---"; var alertHtml = "";
                 var match = horario.match(/(\d{1,2}):(\d{2})/);
                 if (match && isNotifEnabled() && notifPermission === 'granted') {
                     var vd = new Date(); vd.setHours(parseInt(match[1]), parseInt(match[2]), 0, 0);
                     var ad = new Date(vd.getTime() - NOTIF_ADVANCE_MIN * 60 * 1000);
-                    var diffMin = Math.round((vd.getTime() - now.getTime()) / 60000);
-                    if (diffMin < 0) { alertHtml = '<div class="alert-scheduled past">⏰ Horário já passou</div>'; }
-                    else if (diffMin <= NOTIF_ADVANCE_MIN) { alertHtml = '<div class="alert-scheduled" style="background:#fff3e0;border-color:#ff9800;color:#e65100;">⚡ Faltam ' + diffMin + ' min!</div>'; }
+                    var dm = Math.round((vd.getTime() - now.getTime()) / 60000);
+                    if (dm < 0) { alertHtml = '<div class="alert-scheduled past">⏰ Horário já passou</div>'; }
+                    else if (dm <= NOTIF_ADVANCE_MIN) { alertHtml = '<div class="alert-scheduled" style="background:#fff3e0;border-color:#ff9800;color:#e65100;">⚡ Faltam ' + dm + ' min!</div>'; }
                     else { alertHtml = '<div class="alert-scheduled done">🔔 Alerta às ' + ad.getHours().toString().padStart(2,'0') + ':' + ad.getMinutes().toString().padStart(2,'0') + ' (30 min antes)</div>'; }
                 }
-                html += '<div class="card-entrega"><div class="rota-badge">ROTA: ' + (row["ROTA"] || "FECH") + '</div><span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">' + (row["Loja / Ponto de Coleta"] || '') + '</span><div style="display:flex; gap:10px;"><div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">' + horario + '</span></div><div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">' + (row["Horário de Funcionamento até"] || "---") + '</span></div></div><span class="field-label">ENDEREÇO</span><span class="field-value" style="font-size:13px;">' + (row["Endereço Completo"] || '') + '</span><div style="background:#fff5ed; color:var(--dark-orange); padding:10px; border-radius:8px; text-align:center; font-weight:900; border:2px dashed var(--orange); margin-top:10px; font-size:16px;">📦 Pacotes: ' + (row["Pacotes disponíveis agora"] || "---") + '</div>' + alertHtml + '</div>';
+                html += '<div class="card-entrega"><div class="rota-badge">ROTA: ' + (row["ROTA"]||"FECH") + '</div><span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">' + (row["Loja / Ponto de Coleta"]||'') + '</span><div style="display:flex;gap:12px;"><div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">' + horario + '</span></div><div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">' + (row["Horário de Funcionamento até"]||"---") + '</span></div></div><span class="field-label">ENDEREÇO</span><span class="field-value" style="font-size:13px;">' + (row["Endereço Completo"]||'') + '</span><div class="pacotes-box">📦 Pacotes: ' + (row["Pacotes disponíveis agora"]||"---") + '</div>' + alertHtml + '</div>';
             });
-            resDiv.innerHTML = html;
-            scheduleNotificationsForId(id);
-        }).catch(function() { resDiv.innerHTML = "Verifique com seu analista se você foi selecionado na escala."; });
+            resDiv.innerHTML = html; scheduleNotificationsForId(id);
+        }).catch(function() { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>Verifique com seu analista.</div>"; });
     }
-
     window.addEventListener('DOMContentLoaded', function() {
-        var savedId = getSavedDriverId();
-        if (savedId) {
-            document.getElementById('idMotorista1').value = savedId;
-            document.getElementById('idMotorista2').value = savedId;
-            renderSavedIdBars();
-            renderNotifBanner();
-            if (isNotifEnabled() && Notification.permission === 'granted') {
-                scheduleNotificationsForId(savedId);
-            }
-        }
+        var s = getSavedDriverId();
+        if (s) { document.getElementById('idMotorista1').value = s; document.getElementById('idMotorista2').value = s; renderSavedIdBars(); renderNotifBanner(); if (isNotifEnabled() && Notification.permission === 'granted') { scheduleNotificationsForId(s); } }
     });
 </script>
 </body>
