@@ -338,7 +338,7 @@
     // ======================================================
     // URL DO APPS SCRIPT - SUBSTITUA APÓS DEPLOY
     // ======================================================
-    var VERIFICACAO_URL = "COLE_SUA_URL_AQUI";
+    var VERIFICACAO_URL = "https://script.google.com/a/macros/shopee.com/s/AKfycbyBNNZrKzy3TeGL5XNlsr-8vndX_bR5kCXsNY0inhPOESNKDccVdKd-mMlj7fJafVMkIw/exec";
     // ======================================================
 
     var NOTIF_ADVANCE_MIN = 30;
@@ -453,7 +453,7 @@
         localStorage.setItem(getVerifKey(id), horaStr);
 
         // Envia para o Apps Script
-        if (VERIFICACAO_URL && VERIFICACAO_URL !== "COLE_SUA_URL_AQUI") {
+        if (VERIFICACAO_URL && VERIFICACAO_URL !== "https://script.google.com/a/macros/shopee.com/s/AKfycbyBNNZrKzy3TeGL5XNlsr-8vndX_bR5kCXsNY0inhPOESNKDccVdKd-mMlj7fJafVMkIw/exec") {
             fetch(VERIFICACAO_URL, {
                 method: 'POST',
                 mode: 'no-cors',
