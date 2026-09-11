@@ -234,6 +234,38 @@
         }
         .alert-scheduled.past { background: #fce4ec; border-color: #e57373; color: #b71c1c; }
         .alert-scheduled.done { background: #e8f5e9; border-color: #81c784; color: #2e7d32; }
+        /* BOTÃO VERIFICAÇÃO */
+        .btn-verificar-wrapper {
+            margin-top: 20px; margin-bottom: 10px;
+            animation: slideUp 0.4s ease-out both; animation-delay: 0.3s;
+        }
+        .btn-verificar {
+            width: 100%; padding: 18px;
+            background: linear-gradient(135deg, var(--green-border) 0%, #2e7d32 100%);
+            color: white; border: none; border-radius: 16px;
+            font-weight: 800; font-size: 15px; font-family: 'Inter', sans-serif;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-verificar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40,167,69,0.4); }
+        .btn-verificar:active { transform: translateY(0); }
+        .btn-verificar:disabled {
+            background: linear-gradient(135deg, #78909c 0%, #90a4ae 100%);
+            cursor: default; transform: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .btn-verificar svg { width: 20px; height: 20px; }
+        .verificado-banner {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #81c784; border-radius: 16px;
+            padding: 16px; text-align: center; margin-top: 20px;
+            animation: slideUp 0.3s ease-out both;
+        }
+        .verificado-banner .check-icon { font-size: 28px; margin-bottom: 6px; }
+        .verificado-banner .check-text { color: #2e7d32; font-weight: 800; font-size: 14px; }
+        .verificado-banner .check-time { color: #558b2f; font-size: 11px; font-weight: 600; margin-top: 4px; }
         .footer { text-align: center; padding: 24px 16px 32px; color: #aaa; font-size: 11px; font-weight: 600; }
         .footer span { color: var(--orange); }
         @media (max-width: 480px) {
@@ -274,6 +306,7 @@
                 </button>
             </div>
             <div id="resultadoPlan"></div>
+            <div id="verificacaoArea"></div>
             <div class="footer">SPX Express — <span>Shopee</span> Regional RJ</div>
         </div>
     </div>
@@ -302,9 +335,17 @@
         </div>
     </div>
 <script>
+    // ======================================================
+    // URL DO APPS SCRIPT - SUBSTITUA APÓS DEPLOY
+    // ======================================================
+    var VERIFICACAO_URL = "COLE_SUA_URL_AQUI";
+    // ======================================================
+
     var NOTIF_ADVANCE_MIN = 30;
     var scheduledTimers = [];
     var notifPermission = ('Notification' in window) ? Notification.permission : 'default';
+    var ultimoMotoristaConsultado = "";
+
     function saveDriverId(id) { localStorage.setItem('shopee_driver_id', id); localStorage.setItem('shopee_driver_saved_at', new Date().toISOString()); }
     function getSavedDriverId() { return localStorage.getItem('shopee_driver_id') || ''; }
     function isNotifEnabled() { return localStorage.getItem('shopee_notif_enabled') === 'true'; }
@@ -313,6 +354,7 @@
         clearAllTimers(); renderSavedIdBars(); renderNotifBanner();
         document.getElementById('idMotorista1').value = ''; document.getElementById('idMotorista2').value = '';
         document.getElementById('resultadoPlan').innerHTML = ''; document.getElementById('resultadoFech').innerHTML = '';
+        document.getElementById('verificacaoArea').innerHTML = '';
     }
     function renderSavedIdBars() {
         var id = getSavedDriverId();
@@ -373,22 +415,85 @@
             var obj = {}; headers.forEach(function(h, i) { obj[h] = cols[i] || ""; }); return obj;
         });
     }
+
+    // ======================================================
+    // VERIFICAÇÃO DE ROTA
+    // ======================================================
+    function getVerifKey(id) {
+        var hoje = new Date();
+        return 'verif_' + id + '_' + hoje.getFullYear() + '-' + (hoje.getMonth()+1) + '-' + hoje.getDate();
+    }
+
+    function jaVerificouHoje(id) {
+        return localStorage.getItem(getVerifKey(id)) !== null;
+    }
+
+    function renderBotaoVerificacao(id) {
+        var area = document.getElementById('verificacaoArea');
+        if (jaVerificouHoje(id)) {
+            var horaSalva = localStorage.getItem(getVerifKey(id));
+            area.innerHTML = '<div class="verificado-banner"><div class="check-icon">✅</div><div class="check-text">Verificação já realizada</div><div class="check-time">Confirmada às ' + horaSalva + '</div></div>';
+        } else {
+            area.innerHTML = '<div class="btn-verificar-wrapper"><button class="btn-verificar" id="btnVerificar" onclick="confirmarVerificacao()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>VERIFICAÇÃO REALIZADA</button></div>';
+        }
+    }
+
+    function confirmarVerificacao() {
+        var id = ultimoMotoristaConsultado;
+        if (!id) return;
+
+        var btn = document.getElementById('btnVerificar');
+        btn.disabled = true;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10"/></svg>Enviando...';
+
+        var agora = new Date();
+        var horaStr = agora.getHours().toString().padStart(2,'0') + ':' + agora.getMinutes().toString().padStart(2,'0');
+
+        // Salva no localStorage primeiro (garante desabilitação mesmo se falhar)
+        localStorage.setItem(getVerifKey(id), horaStr);
+
+        // Envia para o Apps Script
+        if (VERIFICACAO_URL && VERIFICACAO_URL !== "COLE_SUA_URL_AQUI") {
+            fetch(VERIFICACAO_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, nome: ultimoMotoristaConsultado })
+            }).then(function() {
+                renderBotaoVerificacao(id);
+            }).catch(function() {
+                renderBotaoVerificacao(id);
+            });
+        } else {
+            // Sem URL configurada, só registra localmente
+            renderBotaoVerificacao(id);
+        }
+    }
+
+    // ======================================================
+    // BUSCAR PLANEJAMENTO
+    // ======================================================
     function buscarPlanejamento() {
         var id = document.getElementById('idMotorista1').value.trim();
         var resDiv = document.getElementById('resultadoPlan');
+        var verifArea = document.getElementById('verificacaoArea');
         var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=465492226&single=true&output=csv";
         if (!id) return;
         resDiv.innerHTML = "<div class='loader'>Analisando sua rota...</div>";
+        verifArea.innerHTML = "";
         saveDriverId(id); document.getElementById('idMotorista2').value = id; renderSavedIdBars(); renderNotifBanner();
+        ultimoMotoristaConsultado = id;
         fetch(url).then(function(r) { return r.text(); }).then(function(text) {
             var data = parseCSV(text); var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
-            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>❌ ID não encontrado.</div>"; return; }
+            if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>❌ ID não encontrado.</div>"; verifArea.innerHTML = ""; return; }
             var html = '<div class="table-responsive"><table class="excel-table"><thead><tr><th>ROTA</th><th>LOJA / PONTO</th><th>ENDEREÇO</th><th>GPS</th></tr></thead><tbody>';
             filtrados.forEach(function(row) {
                 var end = (row["ENDEREÇO"]||'') + ', ' + (row["NUMERO"]||'') + ' - ' + (row["BAIRRO"]||'');
                 html += '<tr><td><strong>' + (row["ROTA"]||"SAB") + '</strong></td><td>' + (row["Nome da Loja"]||'') + '</td><td style="font-size:12px;">' + end + '</td><td><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end) + '" target="_blank" class="btn-mini-map">📍 ABRIR</a></td></tr>';
             });
             html += '</tbody></table></div>'; resDiv.innerHTML = html;
+            // Mostra botão de verificação
+            renderBotaoVerificacao(id);
         }).catch(function() { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>Erro ao conectar.</div>"; });
     }
     function buscarFechamentoSabado() {
@@ -413,7 +518,7 @@
                     else if (dm <= NOTIF_ADVANCE_MIN) { alertHtml = '<div class="alert-scheduled" style="background:#fff3e0;border-color:#ff9800;color:#e65100;">⚡ Faltam ' + dm + ' min!</div>'; }
                     else { alertHtml = '<div class="alert-scheduled done">🔔 Alerta às ' + ad.getHours().toString().padStart(2,'0') + ':' + ad.getMinutes().toString().padStart(2,'0') + ' (30 min antes)</div>'; }
                 }
-                html += '<div class="card-entrega"><div class="rota-badge">ROTA: ' + (row["ROTA"]||"FECH") + '</div><span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">' + (row["Loja / Ponto de Coleta"]||'') + '</span><div style="display:flex;gap:12px;"><div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">' + horario + '</span></div><div style="flex:1;"><span class="field-label">FECHA ÀS</span><span class="field-value">' + (row["Horário de Funcionamento até"]||"---") + '</span></div></div><span class="field-label">ENDEREÇO</span><span class="field-value" style="font-size:13px;">' + (row["Endereço Completo"]||'') + '</span><div class="pacotes-box">📦 Pacotes: ' + (row["Pacotes disponíveis agora"]||"---") + '</div>' + alertHtml + '</div>';
+                html += '<div class="card-entrega"><div class="rota-badge">ROTA: ' + (row["ROTA"]||"FECH") + '</div><span class="field-label">PONTO / AGÊNCIA</span><span class="field-value ponto-nome">' + (row["Loja / Ponto de Coleta"]||'') + '</span><div style="display:flex;gap:12px;"><div style="flex:1;"><span class="field-label">VISITA</span><span class="field-value">' + horario + '</span></div><div style="flex:1;"><span class="field-label">FECHA ÁS</span><span class="field-value">' + (row["Horário de Funcionamento até"]||"---") + '</span></div></div><span class="field-label">ENDEREÇO</span><span class="field-value" style="font-size:13px;">' + (row["Endereço Completo"]||'') + '</span><div class="pacotes-box">📦 Pacotes: ' + (row["Pacotes disponíveis agora"]||"---") + '</div>' + alertHtml + '</div>';
             });
             resDiv.innerHTML = html; scheduleNotificationsForId(id);
         }).catch(function() { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>Verifique com seu analista.</div>"; });
