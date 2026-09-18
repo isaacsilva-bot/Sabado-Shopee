@@ -336,15 +336,17 @@
     </div>
 <script>
     // ======================================================
-    // URL DO APPS SCRIPT - SUBSTITUA APÓS DEPLOY
+    // URL DO APPS SCRIPT - VERIFICAÇÃO → PLANILHA
+    // Após fazer deploy do Apps Script, cole a URL aqui:
     // ======================================================
-    var VERIFICACAO_URL = "https://script.google.com/a/macros/shopee.com/s/AKfycbyBNNZrKzy3TeGL5XNlsr-8vndX_bR5kCXsNY0inhPOESNKDccVdKd-mMlj7fJafVMkIw/exec";
+    var VERIFICACAO_URL = "";
     // ======================================================
 
     var NOTIF_ADVANCE_MIN = 30;
     var scheduledTimers = [];
     var notifPermission = ('Notification' in window) ? Notification.permission : 'default';
     var ultimoMotoristaConsultado = "";
+    var horaVisualizacaoStr = "";
 
     function saveDriverId(id) { localStorage.setItem('shopee_driver_id', id); localStorage.setItem('shopee_driver_saved_at', new Date().toISOString()); }
     function getSavedDriverId() { return localStorage.getItem('shopee_driver_id') || ''; }
@@ -448,17 +450,23 @@
 
         var agora = new Date();
         var horaStr = agora.getHours().toString().padStart(2,'0') + ':' + agora.getMinutes().toString().padStart(2,'0');
+        var dataStr = agora.toLocaleDateString('pt-BR');
 
         // Salva no localStorage primeiro (garante desabilitação mesmo se falhar)
         localStorage.setItem(getVerifKey(id), horaStr);
 
-        // Envia para o Apps Script
-        if (VERIFICACAO_URL && VERIFICACAO_URL !== "https://script.google.com/a/macros/shopee.com/s/AKfycbyBNNZrKzy3TeGL5XNlsr-8vndX_bR5kCXsNY0inhPOESNKDccVdKd-mMlj7fJafVMkIw/exec") {
+        // Envia para o Apps Script (planilha de verificações)
+        if (VERIFICACAO_URL) {
             fetch(VERIFICACAO_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id, nome: ultimoMotoristaConsultado })
+                body: JSON.stringify({
+                    id: id,
+                    horaVisualizacao: horaVisualizacaoStr,
+                    horaVerificacao: horaStr,
+                    data: dataStr
+                })
             }).then(function() {
                 renderBotaoVerificacao(id);
             }).catch(function() {
@@ -483,6 +491,8 @@
         verifArea.innerHTML = "";
         saveDriverId(id); document.getElementById('idMotorista2').value = id; renderSavedIdBars(); renderNotifBanner();
         ultimoMotoristaConsultado = id;
+        var agoraVis = new Date();
+        horaVisualizacaoStr = agoraVis.getHours().toString().padStart(2,'0') + ':' + agoraVis.getMinutes().toString().padStart(2,'0');
         fetch(url).then(function(r) { return r.text(); }).then(function(text) {
             var data = parseCSV(text); var filtrados = data.filter(function(row) { return row["ID do motorista"] === id; });
             if (filtrados.length === 0) { resDiv.innerHTML = "<div class='card-entrega' style='text-align:center;padding:30px;'>❌ ID não encontrado.</div>"; verifArea.innerHTML = ""; return; }
